@@ -975,7 +975,7 @@ const CTLDEF={
 const ACTN={1:'Rest',2:'Light',4:'Moderate',8:'Intense'};
 function buildControls(){
   const list=upto('ctl',LEVEL);
-  $('controlBody').innerHTML=list.map(k=>CTLDEF[k]()).join('');
+$('controlBody').innerHTML=list.filter(k=>typeof CTLDEF[k]==='function').map(k=>CTLDEF[k]()).join('');
   if($('cDiet'))$('cDiet').addEventListener('input',e=>{C.diet=+e.target.value;syncUI();});
   if($('cAct'))$('cAct').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;C.activity=+b.dataset.a;syncUI();});
   if($('cBeta'))$('cBeta').addEventListener('input',e=>{C.betaFn=+e.target.value/100;syncUI();});
