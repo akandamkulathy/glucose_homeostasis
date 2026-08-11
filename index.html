@@ -352,7 +352,8 @@ function step(S,C,dt){
   const glpBoost=1+glp*1.1*clamp((S.G-90)/40,0,1);
   const insSecr=betaFn*(MP.insBasal+MP.insAmp/(1+Math.exp(-(S.G-MP.insMid)/MP.insSlope)))*glpBoost;
   const insConc=insSecr+(C.insulinInf||0)*2.2;          // uU/mL
-  const insEff=insConc/(insConc+MP.insKm);               // saturating action
+  const sens=(C.insSens===undefined?1:C.insSens);
+  const insEff=insConc/(insConc+MP.insKm/Math.max(sens,0.05));   // resistance raises the effective Km
   const gcgSecr=MP.gcgBase+MP.gcgAmp/(1+Math.exp((S.G-MP.gcgMid)/MP.gcgSlope));
   const disinh=MP.gcgDisLo+MP.gcgDisHi/(1+insEff/MP.gcgDisKm);   // insulin tonically restrains alpha cells
   const gcgConc=clamp(gcgSecr*disinh*(1-0.35*glp),20,300);    // pg/mL
@@ -433,7 +434,7 @@ const LEVELS={
     flows:['f_liver_pool','f_pool_liver','f_pool_mus','f_mus_sconv','f_prot_pool','f_diet_adip','f_diet_prot','f_pool_adip','f_adip_pool','f_adip_fa','f_fa_lconv','f_fa_sconv'],
     ctl:[]},
  3:{name:'The regulators', nodes:[], flows:[], ctl:['beta'], regs:1},
- 4:{name:'Perturbation', nodes:[], flows:[], ctl:['gluInf','glp1'], scen:['gtt','t1dm','t2dm']},
+ 4:{name:'Perturbation', nodes:[], flows:[], ctl:['gluInf','insSens','glp1'], scen:['gtt','t1dm','t2dm']},
  5:{name:'Overflow', nodes:['ket'], flows:['f_lconv_ket','f_ket_sconv'], ctl:[]},
  6:{name:'Failure and rescue', nodes:[], flows:[], ctl:['insInf','gcgBlock'], insGcg:1}
 };
@@ -442,7 +443,7 @@ function flagUpTo(k,L){for(let i=1;i<=L;i++) if(LEVELS[i][k]) return true; retur
 
 /* ================= DIAGRAM ================= */
 const NODES=[
- {id:'diet',  x:40, y:12, w:170,h:54, c:'diet',t:'Food intake',      s:'carbohydrate \u00b7 fat \u00b7 protein'},
+ {id:'diet',  x:40, y:12, w:170,h:62, c:'diet',t:'Food intake',      s:'carbohydrate \u00b7 fat \u00b7 protein'},
  {id:'adip',  x:680,y:12, w:190,h:60, c:'fat', t:'Adipose lipid',    s:'long-term reserve', fill:1},
  {id:'liver', x:30, y:120,w:165,h:58, c:'gly', t:'Liver glycogen',   s:'releasable to blood', fill:1},
  {id:'pool',  x:290,y:110,w:240,h:88, c:'glu', t:'Blood glucose pool',s:'circulating transit pool', big:1, fill:1},
@@ -496,7 +497,7 @@ let LEVEL=clamp(parseInt(P.get('level')||'6',10)||6,1,6);
 let MODE=(['view','demo','explore'].includes(P.get('mode'))?P.get('mode'):'explore');
 let ALT=false;                       // alternate units
 let S=newState();
-let C={diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0};
+let C={diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0,insSens:1};
 let running=false, speed=6, last=performance.now(), acc=0, sinceRec=0;
 let hist=[], lastD=null, snaps=[], focusH=null, dirty=false;
 const phase={};
@@ -516,7 +517,10 @@ function buildStage(){
     if(f.lab){const t=document.createElementNS(NS,'text');
       t.setAttribute('x',f.lx);t.setAttribute('y',f.ly);t.setAttribute('text-anchor',f.a||'middle');
       t.setAttribute('font-size','10');t.setAttribute('fill','#71858F');
-      t.setAttribute('font-family','IBM Plex Mono, monospace');t.textContent=f.lab;gL.appendChild(t);}
+      t.setAttribute('font-family','IBM Plex Mono, monospace');
+      t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.2');
+      t.setAttribute('paint-order','stroke');t.setAttribute('stroke-linejoin','round');
+      t.setAttribute('id','lab_'+f.id);t.textContent=f.lab;gL.appendChild(t);}
   });
   NODES.filter(n=>nodeVisible(n.id)).forEach(n=>{
     const g=document.createElementNS(NS,'g'),col=cssv(COL[n.c]),bg=cssv(COL[n.c]+'-bg')||'#F2F6F8';
@@ -539,9 +543,12 @@ function buildStage(){
       t.setAttribute('x',cx);t.setAttribute('y',n.y+y);t.setAttribute('text-anchor','middle');
       t.setAttribute('font-size',sz);t.setAttribute('fill',fl);if(w2)t.setAttribute('font-weight',w2);
       t.setAttribute('font-family',fam||'Space Grotesk, sans-serif');g.appendChild(t);return t;};
-    T(n.conv?26:(n.big?32:(n.h>=70?28:23)), n.big?14.5:12.5,'600',col).textContent=n.t;
-    T(n.conv?44:(n.big?52:(n.h>=70?46:39)), n.conv?9.5:10,null,'#71858F','IBM Plex Sans, sans-serif').textContent=n.s;
-    T(n.conv?62:(n.big?78:(n.h>=70?64:55)), n.conv?11.5:(n.big?12.5:10.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
+    T(n.conv?26:Math.round(n.h*0.36), n.big?14.5:12.5,'600',col).textContent=n.t;
+    T(n.conv?44:Math.round(n.h*0.58), n.conv?9.5:10,null,'#71858F','IBM Plex Sans, sans-serif').textContent=n.s;
+    T(n.conv?62:Math.round(n.h*0.84), n.conv?11.5:(n.big?12.5:10.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
+    if(n.id==='sconv'){
+      T(92,9,null,'#71858F','IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
+    }
     if(n.id==='lconv'){
       const bx=n.x+34,by=n.y+72,bw=n.w-68;
       const tr=document.createElementNS(NS,'rect');
@@ -701,6 +708,9 @@ function render(d){
   setFlow('f_lconv_work',(hepGlu*4+d.faToLiver*9-d.ketoProd*9)/40,4,cssv('--conv'));
   setFlow('f_sconv_work',(sysGlu*4+faPeriph*9+d.muscleGlyBurn*4+d.ketoUsed_g*4.5)/60,4,cssv('--conv'));
 
+  const st=$('sconvtxt');
+  if(st){const share=clamp01(((sys*4+faP*9+d.muscleGlyBurn*4+d.ketoUsed_g*4.5))/Math.max(d.demand,1));
+    st.textContent='supplying '+(share*100).toFixed(0)+'% of total demand';}
   const cb=$('capbar');
   if(cb){const conv=NODES.find(z=>z.id==='lconv'),L=d.gateLoad;
     cb.setAttribute('width',(clamp01(L)*(conv.w-70)).toFixed(1));
@@ -775,6 +785,7 @@ function renderAlerts(d){
   }
   if(C.gcgBlock)A.push(['info','glucagon action blocked']);
   if(C.glp1>0)A.push(['info','GLP-1 agonist active']);
+  if((C.insSens===undefined?1:C.insSens)<0.95)A.push(['info','reduced insulin sensitivity']);
   if(S.t>=T_MAX)A.push(['bad','time limit reached \u2014 reset to continue']);
   else if(S.t>336)A.push(['warn','beyond the range this model is calibrated for']);
   if(!A.length&&S.G>=70&&S.G<=140)A.push(['good','all variables within normal range']);
@@ -970,6 +981,7 @@ function buildControls(){
   if($('cBeta'))$('cBeta').addEventListener('input',e=>{C.betaFn=+e.target.value/100;syncUI();});
   if($('cGlu'))$('cGlu').addEventListener('input',e=>{C.glucoseInf=+e.target.value;syncUI();});
   if($('cInf'))$('cInf').addEventListener('input',e=>{C.insulinInf=+e.target.value;syncUI();});
+  if($('cSens'))$('cSens').addEventListener('input',e=>{C.insSens=+e.target.value/100;syncUI();});
   if($('cGlp'))$('cGlp').addEventListener('input',e=>{C.glp1=+e.target.value/100;syncUI();});
   if($('cBlock'))$('cBlock').addEventListener('click',()=>{C.gcgBlock=!C.gcgBlock;syncUI();});
   syncUI();
@@ -981,12 +993,13 @@ function syncUI(){ dirty=!running;
   if($('cBeta')){$('cBeta').value=C.betaFn*100;$('vBeta').textContent=(C.betaFn*100).toFixed(0)+'%';}
   if($('cGlu')){$('cGlu').value=C.glucoseInf;$('vGlu').textContent=C.glucoseInf+' mg/min';}
   if($('cInf')){$('cInf').value=C.insulinInf;$('vInf').textContent=C.insulinInf+' mU/min';}
+  if($('cSens')){const v=(C.insSens===undefined?1:C.insSens);$('cSens').value=v*100;$('vSens').textContent=(v*100).toFixed(0)+'%';}
   if($('cGlp')){$('cGlp').value=(C.glp1||0)*100;$('vGlp').textContent=((C.glp1||0)*100).toFixed(0)+'%';}
   if($('cBlock'))$('cBlock').setAttribute('aria-pressed',C.gcgBlock?'true':'false');
 }
 
 /* ================= SETUP HELPERS ================= */
-function baseC(){return {diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0};}
+function baseC(){return {diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0,insSens:1};}
 function applyScen(sc){
   if(sc.reset){S=newState();hist=[];lastD=null;C=baseC();}
   Object.assign(C,sc.C||{});
