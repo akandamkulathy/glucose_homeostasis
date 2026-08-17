@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EnergyFlow — Regulation of Blood Glucose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF2F4;--panel:#fff;--panel-2:#F7FAFB;--line:#D2DDE3;--line-soft:#E4EBEF;
+  --ink:#16232B;--ink-2:#42555F;--muted:#71858F;
+  --glu:#B0722C;--glu-bg:#F7E7D1; --gly:#2A6C99;--gly-bg:#D9E9F5;
+  --fat:#1E5480;--fat-bg:#D2E2F0; --fa:#2F7C6B;--fa-bg:#D7ECE5;
+  --conv:#4A7E2C;--conv-bg:#E1EFD5;--atp:#94372B;--atp-bg:#F6E1DC;
+  --ket:#564596;--ket-bg:#E2DEF3; --pro:#7A5B8F;--pro-bg:#EBE2F2;
+  --diet:#5C6B73;--diet-bg:#E7ECEF;
+  --ins:#1F6FB2;--gcg:#B4442E;
+  --alarm:#BE3428;--ok:#2F7C4F;--warn:#B8792A;--r:9px;
+  --shadow:0 1px 2px rgba(22,35,43,.05),0 6px 18px -10px rgba(22,35,43,.18);
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1340px;margin:0 auto;padding:20px 20px 60px}
+header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+header.top h1{font-size:25px;font-weight:600}
+header.top p.sub{margin:6px 0 0;color:var(--ink-2);font-size:13.5px;max-width:60ch}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
+nav.tabs button{font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:500;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer;transition:.16s}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2px solid var(--glu);outline-offset:2px}
+.tabpanel{display:none}.tabpanel.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-h{padding:11px 15px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap}
+.card-h h3{font-size:12.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+.card-h .hint{font-size:11.5px;color:var(--muted)}
+.card-b{padding:14px}
+/* level bar */
+.levelbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.levelbar .lv{font-family:"Space Grotesk",sans-serif;font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink-2)}
+.levelbar .lv[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.levelbar .lv[disabled]{opacity:.4;cursor:not-allowed}
+.levelbar .lname{font-size:12.5px;color:var(--muted);margin-left:6px}
+.cr-grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(300px,.92fr);gap:15px;align-items:start}
+@media(max-width:1040px){.cr-grid{grid-template-columns:1fr}}
+.stage{padding:8px 10px 2px}.stage svg{width:100%;height:auto;display:block}
+.alerts{display:flex;flex-wrap:wrap;gap:6px;padding:9px 15px;border-top:1px solid var(--line-soft);min-height:40px;align-items:center}
+.pill{font-family:"IBM Plex Mono",monospace;font-size:10.5px;padding:4px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
+.pill.info{color:var(--ink-2);border-color:var(--line);background:var(--panel-2)}
+.pill.warn{color:var(--warn);border-color:#E8CFA6;background:#FDF6EA}
+.pill.bad{color:var(--alarm);border-color:#EFC0BA;background:#FDEEEC}
+.pill.good{color:var(--ok);border-color:#B8D8C4;background:#EEF7F1}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line-soft);border-top:1px solid var(--line-soft)}
+.ro{background:var(--panel);padding:9px 11px}
+.ro .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ro .v{font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;margin-top:2px;letter-spacing:-.02em}
+.ro .u{font-size:10px;color:var(--muted);font-weight:400;margin-left:2px}
+.ro .nr{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--muted);margin-top:2px}
+.ro.flag .v{color:var(--alarm)}.ro.warnf .v{color:var(--warn)}
+/* trace strip */
+.strip{border-top:1px solid var(--line-soft);padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:820px){.strip{grid-template-columns:1fr}}
+.mini .mrow{display:flex;gap:5px;align-items:center;margin-bottom:5px}
+.mini .mrow select{flex:1;min-width:0;margin:0}
+.mini .mrow .vs{font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+.mini .mrow .xg{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0 2px}
+.mini.addg{display:flex;align-items:center;justify-content:center;min-height:118px}
+.mini canvas{cursor:pointer;border-radius:5px}
+.mini h4{font-size:11px;font-weight:500;color:var(--muted);margin:0 0 5px}
+.mini select{width:100%;font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);margin-bottom:5px}
+.mini canvas{width:100%;height:104px;display:block}
+/* controls */
+.ctl{margin-bottom:14px}.ctl:last-child{margin-bottom:0}
+.ctl label.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:500;margin-bottom:6px}
+.ctl label.lab .val{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+.ctl .desc{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:#DDE5EA}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--panel);border:2px solid var(--ink);margin-top:-5.5px;box-shadow:0 1px 3px rgba(0,0,0,.16)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:#DDE5EA}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--panel);border:2px solid var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1;padding:6px 4px;border:0;background:var(--panel);cursor:pointer;font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;color:var(--ink-2);border-right:1px solid var(--line-soft)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.btn{font-family:"Space Grotesk",sans-serif;font-size:12.5px;font-weight:500;padding:7px 13px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.14s}
+.btn:hover{border-color:#A9BCC7;background:var(--panel-2)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.go{background:var(--conv);border-color:var(--conv);color:#fff}
+.runbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.toggle{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);cursor:pointer;width:100%;text-align:left;font-family:inherit}
+.toggle[aria-pressed="true"]{border-color:var(--ket);background:#F2F0FB}
+.toggle .sw{width:32px;height:18px;border-radius:999px;background:#CBD6DD;flex:none;position:relative;transition:.18s}
+.toggle[aria-pressed="true"] .sw{background:var(--ket)}
+.toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.18s}
+.toggle[aria-pressed="true"] .sw::after{transform:translateX(14px)}
+.toggle .tt b{display:block;font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:600}
+.toggle .tt span{display:block;font-size:10.5px;color:var(--muted);line-height:1.3;margin-top:1px}
+.scen{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.scen button{text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);cursor:pointer;font-family:inherit}
+.scen button:hover{border-color:#A9BCC7;background:var(--panel-2)}
+.scen b{display:block;font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:600}
+.scen span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px;line-height:1.3}
+/* ledger */
+.ledger{margin-bottom:13px}.ledger:last-child{margin-bottom:0}
+.ledger .lh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ledger .lh .t{font-family:"Space Grotesk",sans-serif;font-size:12.5px;font-weight:600}
+.ledger .lh .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+.bar{display:flex;height:30px;border-radius:6px;overflow:hidden;background:#E9EEF1;border:1px solid var(--line-soft)}
+.bar .sf{position:relative;transition:width .28s cubic-bezier(.4,0,.2,1);min-width:0;overflow:hidden}
+.bar .sf span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;color:#fff;opacity:0;transition:opacity .2s}
+.bar .sf.wide span{opacity:1}
+.keys{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:7px}
+.keys .kk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-2)}
+.keys .sw2{width:10px;height:10px;border-radius:3px;flex:none}
+.keys .kv{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:10.5px}
+/* graphs tab */
+.gb{display:grid;grid-template-columns:230px minmax(0,1fr);gap:15px;align-items:start}
+@media(max-width:900px){.gb{grid-template-columns:1fr}}
+.gb select,.gb input[type=text]{width:100%;font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.gb label{display:block;font-size:11.5px;font-weight:500;margin:0 0 5px}
+.gb .fld{margin-bottom:11px}
+#bigPlot{width:100%;height:420px;display:block}
+.snapline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.snapline .sn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);display:flex;gap:6px;align-items:center}
+.snapline .sn button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:13px;line-height:1;padding:0}
+/* cases */
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start}
+.chart-h{background:linear-gradient(180deg,#20323C,#16232B);color:#fff;padding:12px 15px;border-radius:var(--r) var(--r) 0 0}
+.chart-h .nm{font-family:"Space Grotesk",sans-serif;font-size:15px;font-weight:600}
+.chart-h .mrn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;opacity:.7;letter-spacing:.06em;margin-top:2px}
+.vitals{width:100%;border-collapse:collapse;margin:10px 0;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.vitals td{padding:4px 6px;border-bottom:1px solid var(--line-soft)}
+.vitals td:last-child{text-align:right;color:var(--muted)}
+.vitals .ab{color:var(--alarm);font-weight:600}
+.goal{border-left:3px solid var(--conv);background:var(--panel-2);padding:10px 12px;border-radius:0 6px 6px 0;margin:11px 0;font-size:13px}
+.goal b{font-family:"Space Grotesk",sans-serif}
+.status{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:8px 11px;border-radius:6px;margin-top:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted)}
+.status.won{border-color:#B8D8C4;background:#EEF7F1;color:var(--ok)}
+.debrief{display:none;margin-top:11px;padding-top:11px;border-top:1px solid var(--line-soft)}
+.debrief.show{display:block}
+.debrief p{margin:0 0 9px;font-size:13.5px;color:var(--ink-2)}
+.debrief p:last-child{margin:0}
+.modbanner{border-left:3px solid var(--conv)}
+.mb-k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.modcard .kind{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.modcard .kind.ch{color:var(--conv);border-color:#B8D8C4;background:#EEF7F1}
+.modcard .kind.pt{color:var(--atp);border-color:#EFC0BA;background:#FDEEEC}
+.modcard.done{border-color:#B8D8C4}
+.modcard .det{font-size:13.5px;color:var(--ink);margin:0}
+.modcard .brief{font-size:13px;color:var(--ink-2);margin:0 0 10px}
+.overlay{position:fixed;inset:0;background:rgba(22,35,43,.55);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
+.wcard{background:var(--panel);border-radius:14px;box-shadow:0 24px 60px -20px rgba(22,35,43,.45);padding:28px 30px;max-width:620px;width:100%}
+.wsec{margin-top:16px}
+.wlab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.wlevels{display:flex;gap:6px;flex-wrap:wrap}
+.wlevels button{font-family:"Space Grotesk",sans-serif;font-size:12px;padding:7px 11px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink-2);text-align:left}
+.wlevels button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.wlevels button small{display:block;font-size:10px;opacity:.75;font-family:"IBM Plex Sans",sans-serif}
+.wbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.wbtns{grid-template-columns:1fr}}
+.wbtn{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel);cursor:pointer;font-family:inherit;transition:.14s}
+.wbtn:hover{border-color:var(--conv);background:var(--panel-2)}
+.wbtn b{display:block;font-family:"Space Grotesk",sans-serif;font-size:13.5px;font-weight:600}
+.wbtn span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.ab{margin:0 0 11px;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.abh{font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px}
+.foot{margin-top:24px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="overlay" id="welcome">
+  <div class="wcard">
+    <span class="eyebrow">Regulation of blood glucose</span>
+    <h1 style="font-size:30px;margin:4px 0 10px">EnergyFlow</h1>
+    <p style="margin:0 0 18px;color:var(--ink-2);font-size:14px;max-width:56ch">A model of how the body moves chemical energy between the blood, its reserves, and the cells that spend it. Reservoirs hold energy; arrows are the rates at which it moves.</p>
+    <div class="wsec">
+      <div class="wlab">Choose a level</div>
+      <div class="wlevels" id="wlevels"></div>
+    </div>
+    <div class="wsec">
+      <div class="wlab">Choose how to begin</div>
+      <div class="wbtns">
+        <button class="wbtn" data-start="modules"><b>Guided modules</b><span>Work through set investigations for this level</span></button>
+        <button class="wbtn" data-start="model"><b>Open the model</b><span>Every control for this level, with no set task</span></button>
+      </div>
+    </div>
+    <div style="margin-top:16px;text-align:center"><button class="btn" id="about_open_w" style="font-size:11.5px;padding:5px 12px">About this model</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="about" style="display:none">
+  <div class="wcard" style="max-width:640px">
+    <span class="eyebrow">About</span>
+    <h2 style="font-size:23px;margin:4px 0 12px">EnergyFlow</h2>
+    <p class="ab">An interactive model of human energy metabolism. Each box is a reservoir of chemical energy, each arrow is the rate at which energy moves between them, and insulin and glucagon open and close those flows.</p>
+    <h4 class="abh">Why it is built this way</h4>
+    <p class="ab">A simulation gives you controls and a graph but hides the mechanism in between; a diagram shows the mechanism but cannot be run. This puts both in one place, and the guided modules extend it to reasoning about patients.</p>
+    <h4 class="abh">Scope</h4>
+    <p class="ab">A teaching model of energy flow, not a clinical tool. Its parameters were fitted to reproduce established physiological behaviour rather than derived from first principles. Use it for direction, sequence, and magnitude.</p>
+    <h4 class="abh">Credits</h4>
+    <p class="ab">Developed by <b>Akhil Kandamkulathy</b>. Built with the assistance of Claude, an AI tool developed by Anthropic; the physiological content, calibration targets, and pedagogical design are the author’s own.</p>
+    <p class="ab" style="color:var(--muted);font-size:12px;margin-top:14px">© 2026 Akhil Kandamkulathy. Provided for educational use.</p>
+    <div class="runbar" style="margin-top:16px"><button class="btn primary" id="about_close">Close</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="brief" style="display:none">
+  <div class="wcard" style="max-width:640px">
+    <div id="brief_chart"></div>
+    <span class="eyebrow" id="brief_kind"></span>
+    <h2 id="brief_title" style="font-size:22px;margin:4px 0 10px"></h2>
+    <p id="brief_body" style="margin:0 0 14px;color:var(--ink-2);font-size:14px"></p>
+    <div id="brief_vit"></div>
+    <div class="goal" style="margin:14px 0"><b>Task.</b> <span id="brief_det"></span></div>
+    <div class="runbar"><button class="btn primary" id="brief_go">Continue to the model</button>
+      <button class="btn" id="brief_cancel">Back</button></div>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <span class="eyebrow">Regulation of blood glucose</span>
+    <h1>EnergyFlow</h1>
+    <p class="sub" id="subline">Reservoirs hold chemical energy. Arrows are the rates at which it moves. Set the conditions, run the clock, and read the result.</p>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" aria-controls="tab-control" id="t1">Control room</button>
+    <button role="tab" aria-selected="false" aria-controls="tab-graphs" id="t2">Graphs</button>
+    <button role="tab" aria-selected="false" aria-controls="tab-cases" id="t3">Modules</button>
+  </nav>
+</header>
+
+<div class="levelbar" id="levelbar"></div>
+
+<section class="tabpanel active" id="tab-control" role="tabpanel" aria-labelledby="t1">
+  <div class="card modbanner" id="modbanner" style="display:none;margin-bottom:14px">
+    <div class="card-b" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:280px">
+        <div class="mb-k" id="mb_lv"></div>
+        <h3 id="mb_title" style="font-size:16px;margin:3px 0 6px"></h3>
+        <p id="mb_det" style="margin:0;font-size:13.5px;color:var(--ink-2)"></p>
+      </div>
+      <div style="min-width:230px">
+        <div class="status" id="mb_status" style="margin:0"></div>
+        <div class="runbar" style="margin-top:8px">
+          <button class="btn" id="mb_restart">Restart</button>
+          <button class="btn" id="mb_close">Close module</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cr-grid">
+    <div class="card">
+      <div class="card-h">
+        <h3>Energy reservoirs and flows</h3>
+        <span class="hint">Arrow thickness and pulse rate = rate of energy transfer</span>
+      </div>
+      <div class="card-b stage">
+        <svg id="stage" viewBox="0 0 1020 500" role="img" aria-label="Diagram of metabolic energy reservoirs and the flows between them">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M1 1.5 L9 5 L1 8.5 z" fill="context-stroke"/></marker></defs>
+          <g id="flows" fill="none" stroke-linecap="round"></g>
+          <g id="flowlabels"></g>
+          <g id="nodes"></g>
+          <g id="badges"></g>
+          <g id="hormonebox"></g>
+          <g id="regarrows" fill="none" stroke-linecap="round"></g>
+        </svg>
+      </div>
+      <div class="alerts" id="alerts"></div>
+      <div class="readouts" id="readouts"></div>
+      <div class="strip" id="strip"></div>
+    </div>
+
+    <div id="rightcol">
+      <div class="card" id="controlCard">
+        <div class="card-h"><h3>Controls</h3></div>
+        <div class="card-b" id="controlBody"></div>
+      </div>
+      <div class="card" style="margin-top:13px" id="clockCard">
+        <div class="card-h"><h3>Clock</h3><span class="hint" id="clockHint">paused</span></div>
+        <div class="card-b">
+          <div class="runbar" style="margin-bottom:9px">
+            <button class="btn go" id="bPlay" style="min-width:74px">Run</button>
+            <div class="seg" id="cSpeed" style="flex:1" role="group" aria-label="Speed">
+              <button data-s="1" aria-pressed="false">1×</button>
+              <button data-s="6" aria-pressed="true">6×</button>
+              <button data-s="24" aria-pressed="false">24×</button>
+            </div>
+            <button class="btn" id="bReset">Reset</button>
+          </div>
+          <label class="lab" style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:500;margin-bottom:6px">Advance by <span class="val mono" style="color:var(--ink-2)">then read the result</span></label>
+          <div class="seg" id="cAdv" role="group" aria-label="Advance by">
+            <button data-h="0.1667">10 min</button><button data-h="1">1 h</button>
+            <button data-h="12">12 h</button><button data-h="24">24 h</button>
+          </div>
+          <div class="desc" style="font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4">Set your controls, advance a fixed interval, then read the graphs — the way you would run an experiment.</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:13px">
+        <div class="card-h"><h3>Reservoir contents</h3><span class="hint">energy stored</span></div>
+        <div class="card-b" id="resList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:15px" id="ledgerCard">
+    <div class="card-h"><h3>Energy ledger</h3><span class="hint">where energy is coming from, right now</span></div>
+    <div class="card-b">
+      <div class="ledger"><div class="lh"><span class="t">Reaching cells</span><span class="n" id="ledA-tot">—</span></div>
+        <div class="bar" id="ledA"></div><div class="keys" id="ledA-keys"></div></div>
+      <div class="ledger"><div class="lh"><span class="t">Refilling the blood glucose pool</span><span class="n" id="ledB-tot">—</span></div>
+        <div class="bar" id="ledB"></div><div class="keys" id="ledB-keys"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="tabpanel" id="tab-graphs" role="tabpanel" aria-labelledby="t2">
+  <div id="gSlot" style="margin-bottom:14px"></div>
+  <div class="card"><div class="card-h"><h3 id="gTitle">Graph</h3>
+    <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="hint mono" id="gLeg"></span>
+      <button class="btn" id="bSnap" style="padding:5px 10px;font-size:11.5px">Save this run</button>
+      <button class="btn" id="bClear" style="padding:5px 10px;font-size:11.5px">Clear</button>
+    </span></div>
+    <div class="card-b"><canvas id="bigPlot"></canvas><div class="snapline" id="snaps"></div></div></div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h3>All graphs</h3>
+    <span class="hint">click a graph to expand it above</span></div>
+    <div class="card-b"><div class="strip" id="ggrid"></div></div></div>
+</section>
+
+<section class="tabpanel" id="tab-cases" role="tabpanel" aria-labelledby="t3">
+  <div class="cases" id="cases"></div>
+</section>
+
+<div class="foot"><span id="foot"></span> · <button class="btn" id="about_open" style="padding:3px 10px;font-size:11px">About</button></div>
+</div>
+
+<script>
+"use strict";
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const clamp01=v=>clamp(v,0,1);
+const BMR=75,G_PER_MGDL=0.15,LIVER_MAX=100,MUSCLE_MAX=400,T_MAX=504;
+const $=id=>document.getElementById(id);
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS='http://www.w3.org/2000/svg';
+
+/* ================= MODEL ================= */
+function newState(){return {t:0,G:95,liverGly:95,muscleGly:350,fat:15000,protein:6000,K:0.4,gngAdapt:0.25};}
+
+// Calibrated so that reported hormone concentrations sit in the human physiological
+// range, and so that receptor-level effect saturates well below maximal concentration.
+const MP={
+  insBasal:2, insAmp:78, insMid:135, insSlope:22, insKm:26,
+  gcgBase:36, gcgAmp:50, gcgMid:76, gcgSlope:8,
+  gcgDisLo:0.55, gcgDisHi:1.95, gcgDisKm:0.18, gcgEffOff:30, gcgEffSpan:85,
+  uptake:19, proteoG:2.4, glycogenolysis:9, gngCap:13, lipoG:12.5, synth:11, lactate:3.6,
+  faLiver:0.30, hepOx:2.2, ketoVmax:15, indBase:0.55, indAmp:0.9, indTau:1.5, kfBase:0.82
+};
+
+function step(S,C,dt){
+  const activity=C.activity, betaFn=C.betaFn, glp=C.glp1||0;
+  // --- hormone concentrations, then receptor-level effect ---
+  const glpBoost=1+glp*1.1*clamp((S.G-90)/40,0,1);
+  const insSecr=betaFn*(MP.insBasal+MP.insAmp/(1+Math.exp(-(S.G-MP.insMid)/MP.insSlope)))*glpBoost;
+  const insConc=insSecr+(C.insulinInf||0)*2.2;          // uU/mL
+  const sens=(C.insSens===undefined?1:C.insSens);
+  const insEff=insConc/(insConc+MP.insKm/Math.max(sens,0.05));   // resistance raises the effective Km
+  const gcgSecr=MP.gcgBase+MP.gcgAmp/(1+Math.exp((S.G-MP.gcgMid)/MP.gcgSlope));
+  const disinh=MP.gcgDisLo+MP.gcgDisHi/(1+insEff/MP.gcgDisKm);   // insulin tonically restrains alpha cells
+  const gcgConc=clamp(gcgSecr*disinh*(1-0.35*glp),20,300);    // pg/mL
+  const gcgEffRaw=clamp01((gcgConc-MP.gcgEffOff)/MP.gcgEffSpan);
+  const gcgEff=C.gcgBlock? gcgEffRaw*0.04 : gcgEffRaw;
+
+  const kFrac=Math.min(0.62,S.K/(S.K+32));
+  let oblig=(0.27*BMR*(1-kFrac))/4+1.5; oblig*=clamp(S.G/75,0.40,1.15);
+  const spare=1-0.55*kFrac;
+  const idUptake=insEff*MP.uptake*Math.pow(S.G/95,1.15)*(0.55+0.45*activity/4)*spare;
+  const muscleWork=Math.max(0,(activity-1)*BMR);
+  const glyFrac=clamp(0.25+0.09*activity,0,0.85);
+  const muscleGlyBurn=muscleWork*glyFrac/4*clamp(S.muscleGly/20,0,1);
+  const dietG=(C.diet*0.50/4/24)*(1-0.28*glp)+(C.glucoseInf||0)*0.06;
+  const dietFat=C.diet*0.35/9/24*(1-0.28*glp);
+  const lipo=(0.30*gcgEff+0.75*Math.pow(1-insEff,2))*MP.lipoG*(1+0.18*(activity-1))*clamp(S.fat/200,0,1);
+  const glycerol=lipo*0.10, gngGlycerol=glycerol*0.90;
+  const proteo=gcgEff*MP.proteoG*(S.liverGly<30?1.6:0.40)*clamp(S.protein/200,0,1);
+  const gngAA=proteo*0.55, lactate=MP.lactate;
+  S.gngAdapt+=(gcgEff-S.gngAdapt)*(dt/MP.indTau);
+  const gng=Math.min(gcgEff*MP.gngCap,(gngGlycerol+gngAA+lactate)*(MP.indBase+MP.indAmp*S.gngAdapt));
+  const glycogenolysis=gcgEff*MP.glycogenolysis*clamp(1-0.9*insEff,0,1)*clamp(S.liverGly/5,0,1);
+  const synth=insEff*MP.synth*clamp((S.G-88)/35,0,1);
+  const liverStore=synth*0.35*clamp((LIVER_MAX-S.liverGly)/5,0,1);
+  const muscleStore=synth*0.65*clamp((MUSCLE_MAX-S.muscleGly)/20,0,1);
+  const lipogenesis=insEff*2.6*clamp((S.G-95)/45,0,1);
+  const renal=S.G>180?(S.G-180)*0.055:0;
+  const faToLiver=lipo*0.90*MP.faLiver;
+  const hepOxCap=MP.hepOx*(1-0.70*clamp(gng/11,0,1));
+  const ketoFrac=MP.kfBase+(1-MP.kfBase)*Math.pow(1-insEff,2);
+  const ketoGate=clamp(0.15+0.85*(gcgEff/0.50),0,1);
+  const ketoProd=Math.max(0,faToLiver-hepOxCap)*ketoFrac*ketoGate;
+  const Vmax=MP.ketoVmax*(1+0.45*(activity-1));
+  const ketoClear=Vmax*S.K/(25+S.K)+S.K*0.03;
+  const dG=((dietG+glycogenolysis+gng)-(oblig+idUptake+renal+liverStore+muscleStore+lipogenesis))/G_PER_MGDL;
+  S.G=Math.max(10,S.G+dG*dt);
+  S.liverGly=clamp(S.liverGly+(liverStore-glycogenolysis)*dt,0,LIVER_MAX);
+  S.muscleGly=clamp(S.muscleGly+(muscleStore-muscleGlyBurn)*dt,0,MUSCLE_MAX);
+  S.fat=Math.max(0,S.fat+(dietFat+lipogenesis*0.55-lipo)*dt);
+  S.protein=Math.max(0,S.protein-proteo*dt);
+  S.K=Math.max(0,S.K+(ketoProd*6.67-ketoClear)*dt);
+  S.t+=dt;
+  const pH=clamp(7.40-0.0022*Math.max(0,S.K-8),6.85,7.45);
+  const faOxid=Math.max(0,lipo*0.90-ketoProd);
+  return {insConc,insEff,ins:insEff,gcgConc,gcgEff,gcg:gcgEff,gcgPlasma:gcgEff,gng,glycogenolysis,
+    lipo,lipogenesis,ketoProd,ketoClear,ketoUsed_g:ketoClear/6.67,oblig,idUptake,muscleGlyBurn,
+    dietG,dietFat,pH,kFrac,renal,hepOxCap,faToLiver,faOxid,proteo,liverStore,muscleStore,
+    glycerol,gngGlycerol,gngAA,lactate,gateLoad:hepOxCap>0?faToLiver/hepOxCap:2,demand:BMR*activity};
+}
+
+/* ================= VARIABLE REGISTRY ================= */
+// f(S,d) -> primary unit value.  alt: {u, f} conversion from primary.
+const VARS={
+ t:      {lab:'Time',                u:'h',      alt:{u:'min',   f:v=>v*60},   lv:1, col:'--muted', f:(S,d)=>S.t},
+ G:      {lab:'Plasma [glucose]',    u:'mg/dL',  alt:{u:'mmol/L',f:v=>v/18},   lv:1, col:'--glu',  nr:[70,110], f:(S,d)=>S.G},
+ MR:     {lab:'Metabolic rate',      u:'kcal/h', alt:{u:'kcal/d',f:v=>v*24},   lv:1, col:'--atp',  f:(S,d)=>d.demand},
+ liverGly:{lab:'Liver glycogen',     u:'g',      alt:{u:'kcal',  f:v=>v*4},    lv:2, col:'--gly',  f:(S,d)=>S.liverGly},
+ muscleGly:{lab:'Muscle glycogen',   u:'g',      alt:{u:'kcal',  f:v=>v*4},    lv:2, col:'--fa',   f:(S,d)=>S.muscleGly},
+ fat:    {lab:'Adipose lipid',       u:'kg',     alt:{u:'g',     f:v=>v*1000}, lv:2, col:'--fat',  f:(S,d)=>S.fat/1000},
+ protein:{lab:'Cell protein',        u:'kg',     alt:{u:'g',     f:v=>v*1000}, lv:2, col:'--pro',  f:(S,d)=>S.protein/1000},
+ insUU:  {lab:'Plasma [insulin]',    u:'\u00b5U/mL',alt:{u:'pmol/L',f:v=>v*6.945}, lv:3, col:'--ins', nr:[5,25], f:(S,d)=>d.insConc},
+ gcgPg:  {lab:'Plasma [glucagon]',   u:'pg/mL',  alt:{u:'pmol/L',f:v=>v*0.287},lv:3, col:'--gcg', nr:[40,100], f:(S,d)=>d.gcgConc},
+ hgo:    {lab:'Hepatic glucose output',u:'g/h',  alt:{u:'mg/min',f:v=>v*1000/60},lv:3,col:'--glu', f:(S,d)=>d.glycogenolysis+d.gng},
+ gng:    {lab:'Gluconeogenesis rate',u:'g/h',    alt:{u:'mg/min',f:v=>v*1000/60},lv:3,col:'--pro', f:(S,d)=>d.gng},
+ glyl:   {lab:'Glycogenolysis rate', u:'g/h',    alt:{u:'mg/min',f:v=>v*1000/60},lv:3,col:'--gly', f:(S,d)=>d.glycogenolysis},
+ lipo:   {lab:'Lipolysis rate',      u:'g/h',    alt:{u:'kcal/h',f:v=>v*9},    lv:2, col:'--fat',  f:(S,d)=>d.lipo},
+ K:      {lab:'Plasma [ketoacids]',  u:'mg/dL',  alt:{u:'mmol/L',f:v=>v/10.4}, lv:5, col:'--ket',  nr:[0,3], f:(S,d)=>S.K},
+ pH:     {lab:'Arterial pH',         u:'',       alt:null,                      lv:5, col:'--atp',  nr:[7.35,7.45], f:(S,d)=>d.pH},
+ ketoP:  {lab:'Ketogenesis rate',    u:'g/h',    alt:null,                      lv:5, col:'--ket',  f:(S,d)=>d.ketoProd}
+};
+const READOUTS=['G','insUU','gcgPg','K','pH','MR'];
+
+/* ================= LEVELS ================= */
+const LEVELS={
+ 1:{name:'Fuel and demand', nodes:['diet','pool','lconv','sconv','lwork','swork'],
+    flows:['f_diet_pool','f_pool_lconv','f_pool_sconv','f_lconv_work','f_sconv_work'], ctl:['diet','activity']},
+ 2:{name:'The reserves', nodes:['liver','muscle','adip','prot','fa'],
+    flows:['f_liver_pool','f_pool_liver','f_pool_mus','f_mus_sconv','f_prot_pool','f_diet_adip','f_diet_prot','f_pool_adip','f_adip_pool','f_adip_fa','f_fa_lconv','f_fa_sconv'],
+    ctl:[]},
+ 3:{name:'The regulators', nodes:[], flows:[], ctl:['beta'], regs:1},
+ 4:{name:'Perturbation', nodes:[], flows:[], ctl:['gluInf','insSens','glp1'], scen:['gtt','t1dm','t2dm']},
+ 5:{name:'Overflow', nodes:['ket'], flows:['f_lconv_ket','f_ket_sconv'], ctl:[]},
+ 6:{name:'Failure and rescue', nodes:[], flows:[], ctl:['insInf','gcgBlock'], insGcg:1}
+};
+function upto(k,L){const out=[];for(let i=1;i<=L;i++){(LEVELS[i][k]||[]).forEach(v=>out.push(v));}return out;}
+function flagUpTo(k,L){for(let i=1;i<=L;i++) if(LEVELS[i][k]) return true; return false;}
+
+/* ================= DIAGRAM ================= */
+const NODES=[
+ {id:'diet',  x:86, y:10, w:190,h:64, c:'diet',t:'Food intake',      s:'carbohydrate \u00b7 fat \u00b7 protein'},
+ {id:'adip',  x:790,y:10, w:190,h:60, c:'fat', t:'Adipose lipid',    s:'long-term reserve', fill:1},
+ {id:'liver', x:56, y:118,w:160,h:58, c:'gly', t:'Liver glycogen',   s:'releasable to blood', fill:1},
+ {id:'pool',  x:360,y:108,w:250,h:90, c:'glu', t:'Blood glucose pool',s:'circulating transit pool', big:1, fill:1},
+ {id:'fa',    x:790,y:140,w:190,h:56, c:'fa',  t:'Fatty acids',      s:'from lipolysis'},
+ {id:'muscle',x:56, y:208,w:160,h:58, c:'gly', t:'Muscle glycogen',  s:'burned where it sits', fill:1},
+ {id:'prot',  x:56, y:298,w:160,h:56, c:'pro', t:'Cell protein',     s:'structures and enzymes', fill:1},
+ {id:'lconv', x:290,y:288,w:200,h:100,c:'conv',t:'Liver convergence',s:'energy processed in the liver', big:1, conv:1},
+ {id:'ket',   x:545,y:308,w:160,h:54, c:'ket', t:'Ketone bodies',    s:'made in the liver'},
+ {id:'sconv', x:760,y:288,w:200,h:100,c:'conv',t:'Systemic convergence',s:'energy processed in the rest of the body', big:1, conv:1},
+ {id:'lwork', x:290,y:422,w:200,h:56, c:'atp', t:'Liver energy use', s:'work and heat'},
+ {id:'swork', x:760,y:422,w:200,h:56, c:'atp', t:'Systemic energy use',s:'work and heat'}
+];
+
+const FLOWS=[
+ {id:'f_diet_pool', d:'M215 76 L392 104',            lab:'carbohydrate',   lx:230,ly:98, a:'start'},
+ {id:'f_diet_adip', d:'M276 32 Q530 58 788 32',      lab:'fat',            lx:530,ly:20, a:'middle'},
+ {id:'f_diet_prot', d:'M104 74 Q18 200 54 316',      lab:'protein',        lx:2,  ly:206,a:'start'},
+ {id:'f_liver_pool',d:'M216 128 L358 128',           lab:'glycogenolysis', lx:300,ly:118,a:'middle'},
+ {id:'f_pool_liver',d:'M358 172 L216 172',           lab:'glycogenesis',   lx:272,ly:192,a:'middle'},
+ {id:'f_pool_mus',  d:'M372 198 Q310 212 216 226'},
+ {id:'f_mus_sconv', d:'M216 240 Q480 254 758 318',   lab:'burned locally', lx:470,ly:244,a:'middle'},
+ {id:'f_prot_pool', d:'M204 298 Q268 250 358 202',   lab:'gluconeogenesis',lx:220,ly:272,a:'start'},
+ {id:'f_pool_lconv',d:'M412 198 L392 284',           lab:'constitutive',   lx:372,ly:246,a:'end'},
+ {id:'f_pool_sconv',d:'M600 188 Q700 226 800 284',   lab:'glucose uptake', lx:648,ly:210,a:'middle'},
+ {id:'f_pool_adip', d:'M600 116 Q700 60 788 40',     lab:'lipogenesis',    lx:668,ly:88, a:'middle'},
+ {id:'f_adip_pool', d:'M816 70 Q700 118 612 154',    lab:'glycerol',       lx:744,ly:134,a:'middle'},
+ {id:'f_adip_fa',   d:'M885 70 L885 138',            lab:'lipolysis',      lx:916,ly:112,a:'start'},
+ {id:'f_fa_lconv',  d:'M788 178 Q640 240 492 302'},
+ {id:'f_fa_sconv',  d:'M885 196 L885 284',           lab:'oxidation',      lx:916,ly:248,a:'start'},
+ {id:'f_lconv_ket', d:'M486 320 Q516 288 543 308',   lab:'ketogenesis',    lx:498,ly:276,a:'middle'},
+ {id:'f_ket_sconv', d:'M705 336 L758 336'},
+ {id:'f_lconv_work',d:'M390 388 L390 418',           lab:'expenditure',    lx:400,ly:404,a:'start'},
+ {id:'f_sconv_work',d:'M860 388 L860 418',           lab:'expenditure',    lx:870,ly:404,a:'start'}
+];
+
+const REGS=[
+ {h:'gcg',s:'+',flow:'f_liver_pool',x:240,y:150,sx:240,sy:128,k:'glycogenolysis',nd:['liver','pool']},
+ {h:'ins',s:'+',flow:'f_pool_liver',x:334,y:150,sx:334,sy:172,k:'liverStore',   nd:['pool','liver']},
+ {h:'ins',s:'+',flow:'f_pool_sconv',x:674,y:256,sx:698,sy:234,k:'idUptake',     nd:['pool','sconv']},
+ {h:'ins',s:'+',flow:'f_pool_adip', x:722,y:94, sx:702,sy:74, k:'lipogenesis',  nd:['pool','adip']},
+ {h:'ins',s:'\u2212',flow:'f_adip_fa',x:850,y:90,sx:879,sy:90,k:'insBrake',    nd:['adip','fa']},
+ {h:'gcg',s:'+',flow:'f_adip_fa',   x:850,y:122,sx:879,sy:122,k:'lipo',         nd:['adip','fa']},
+ {h:'gcg',s:'+',flow:'f_prot_pool', x:250,y:274,sx:270,sy:252,k:'gngAA',        nd:['prot','pool']},
+ {h:'gcg',s:'+',flow:'f_lconv_ket', x:516,y:336,sx:516,sy:305,k:'ketoProd',lv:5,nd:['lconv','ket']}
+];
+const COL={diet:'--diet',glu:'--glu',gly:'--gly',fat:'--fat',fa:'--fa',conv:'--conv',atp:'--atp',ket:'--ket',pro:'--pro'};
+
+/* ================= STATE ================= */
+const P=new URLSearchParams(location.search);
+let LEVEL=clamp(parseInt(P.get('level')||'6',10)||6,1,6);
+let MODE=(['view','demo','explore'].includes(P.get('mode'))?P.get('mode'):'explore');
+let ALT=false;                       // alternate units
+let S=newState();
+let C={diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0,insSens:1};
+let running=false, speed=6, last=performance.now(), acc=0, sinceRec=0;
+let hist=[], lastD=null, snaps=[], focusH=null, dirty=false;
+const phase={};
+
+/* ================= BUILD ================= */
+function nodeVisible(id){return upto('nodes',LEVEL).includes(id);}
+function flowVisible(id){return upto('flows',LEVEL).includes(id);}
+
+function buildStage(){
+  const gF=$('flows'),gL=$('flowlabels'),gN=$('nodes'),gB=$('badges'),gR=$('regarrows'),gH=$('hormonebox');
+  gF.innerHTML=gL.innerHTML=gN.innerHTML=gB.innerHTML=gR.innerHTML=gH.innerHTML='';
+  FLOWS.filter(f=>flowVisible(f.id)).forEach(f=>{
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',f.d);p.setAttribute('id',f.id);p.setAttribute('stroke','#C9D6DD');
+    p.setAttribute('stroke-width','1.4');p.setAttribute('marker-end','url(#ah)');p.setAttribute('fill','none');
+    gF.appendChild(p);
+    if(f.lab){const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',f.lx);t.setAttribute('y',f.ly);t.setAttribute('text-anchor',f.a||'middle');
+      t.setAttribute('font-size','10');t.setAttribute('fill','#71858F');
+      t.setAttribute('font-family','IBM Plex Mono, monospace');
+      t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.2');
+      t.setAttribute('paint-order','stroke');t.setAttribute('stroke-linejoin','round');
+      t.setAttribute('id','lab_'+f.id);t.textContent=f.lab;gL.appendChild(t);}
+  });
+  NODES.filter(n=>nodeVisible(n.id)).forEach(n=>{
+    const g=document.createElementNS(NS,'g'),col=cssv(COL[n.c]),bg=cssv(COL[n.c]+'-bg')||'#F2F6F8';
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',n.x);r.setAttribute('y',n.y);r.setAttribute('width',n.w);r.setAttribute('height',n.h);
+    r.setAttribute('rx',n.big?10:8);r.setAttribute('fill',bg);r.setAttribute('stroke',col);
+    r.setAttribute('stroke-width',n.big?1.8:1.2);g.appendChild(r);
+    if(n.fill){
+      const cp=document.createElementNS(NS,'clipPath');cp.setAttribute('id','cl_'+n.id);
+      const cr=document.createElementNS(NS,'rect');
+      cr.setAttribute('x',n.x);cr.setAttribute('y',n.y);cr.setAttribute('width',n.w);
+      cr.setAttribute('height',n.h);cr.setAttribute('rx',n.big?10:8);cp.appendChild(cr);g.appendChild(cp);
+      const lv=document.createElementNS(NS,'rect');lv.setAttribute('id','lv_'+n.id);
+      lv.setAttribute('x',n.x);lv.setAttribute('y',n.y);lv.setAttribute('width',0);lv.setAttribute('height',n.h);
+      lv.setAttribute('fill',col);lv.setAttribute('opacity','.18');lv.setAttribute('clip-path','url(#cl_'+n.id+')');
+      g.appendChild(lv);
+    }
+    const cx=n.x+n.w/2;
+    const T=(y,sz,w2,fl,fam)=>{const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',cx);t.setAttribute('y',n.y+y);t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-size',sz);t.setAttribute('fill',fl);if(w2)t.setAttribute('font-weight',w2);
+      t.setAttribute('font-family',fam||'Space Grotesk, sans-serif');g.appendChild(t);return t;};
+    T(n.conv?26:Math.round(n.h*0.36), n.big?14.5:12.5,'600',col).textContent=n.t;
+    T(n.conv?44:Math.round(n.h*0.58), n.conv?9.5:10,null,'#71858F','IBM Plex Sans, sans-serif').textContent=n.s;
+    T(n.conv?62:Math.round(n.h*0.84), n.conv?11.5:(n.big?12.5:10.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
+    g.setAttribute('id','nd_'+n.id);
+    if(n.id==='sconv'){
+      T(92,9,null,'#71858F','IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
+    }
+    if(n.id==='lconv'){
+      const bx=n.x+34,by=n.y+72,bw=n.w-68;
+      const tr=document.createElementNS(NS,'rect');
+      tr.setAttribute('x',bx);tr.setAttribute('y',by);tr.setAttribute('width',bw);tr.setAttribute('height',6);
+      tr.setAttribute('rx',3);tr.setAttribute('fill','#fff');tr.setAttribute('stroke',col);
+      tr.setAttribute('stroke-width','.8');tr.setAttribute('opacity','.55');g.appendChild(tr);
+      const fr=document.createElementNS(NS,'rect');fr.setAttribute('id','capbar');
+      fr.setAttribute('x',bx+1);fr.setAttribute('y',by+1);fr.setAttribute('width',0);
+      fr.setAttribute('height',4);fr.setAttribute('rx',2);fr.setAttribute('fill',col);g.appendChild(fr);
+      T(92,9,null,'#71858F','IBM Plex Mono, monospace').setAttribute('id','captxt');
+    }
+    gN.appendChild(g);
+  });
+  // regulator badges
+  if(flagUpTo('regs',LEVEL)){
+    REGS.filter(r=>flowVisible(r.flow)&&(!r.lv||LEVEL>=r.lv)).forEach((r,i)=>{
+      const g=document.createElementNS(NS,'g');g.setAttribute('id','bdg'+i);
+      if(r.sx!==undefined){
+        const st=document.createElementNS(NS,'line');
+        st.setAttribute('x1',r.x);st.setAttribute('y1',r.y);
+        st.setAttribute('x2',r.sx);st.setAttribute('y2',r.sy);
+        st.setAttribute('stroke',cssv('--'+r.h));st.setAttribute('stroke-width','1.3');
+        st.setAttribute('opacity','.55');g.appendChild(st);
+      }
+      const c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',r.x);c.setAttribute('cy',r.y);c.setAttribute('r',8.5);
+      c.setAttribute('fill','#fff');c.setAttribute('stroke',cssv('--'+r.h));c.setAttribute('stroke-width','1.6');
+      g.appendChild(c);
+      const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',r.x);t.setAttribute('y',r.y+3.6);t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.setAttribute('fill',cssv('--'+r.h));
+      t.setAttribute('font-family','IBM Plex Mono, monospace');t.textContent=r.s;g.appendChild(t);
+      gB.appendChild(g);
+    });
+    buildHormoneBox();
+  }
+}
+function buildHormoneBox(){
+  const gH=$('hormonebox');
+  const bx=30,by=400,bw=210,bh=78;
+  const r=document.createElementNS(NS,'rect');
+  r.setAttribute('x',bx);r.setAttribute('y',by);r.setAttribute('width',bw);r.setAttribute('height',bh);
+  r.setAttribute('rx',8);r.setAttribute('fill','#fff');r.setAttribute('stroke',cssv('--line'));
+  gH.appendChild(r);
+  [['ins','Insulin',by+32],['gcg','Glucagon',by+62]].forEach(([h,nm,yy])=>{
+    const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
+    g.addEventListener('click',()=>{focusH = (focusH===h? null : h); drawRegArrows();});
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',bx+18);c.setAttribute('cy',yy-4);c.setAttribute('r',6.5);
+    c.setAttribute('fill',cssv('--'+h));c.setAttribute('id','hdot_'+h);g.appendChild(c);
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',bx+32);t.setAttribute('y',yy);t.setAttribute('font-size','11.5');
+    t.setAttribute('font-weight','600');t.setAttribute('fill',cssv('--'+h));
+    t.setAttribute('font-family','Space Grotesk, sans-serif');t.textContent=nm;g.appendChild(t);
+    const v=document.createElementNS(NS,'text');
+    v.setAttribute('x',bx+bw-10);v.setAttribute('y',yy);v.setAttribute('text-anchor','end');
+    v.setAttribute('font-size','11');v.setAttribute('fill','#71858F');v.setAttribute('id','hval_'+h);
+    v.setAttribute('font-family','IBM Plex Mono, monospace');g.appendChild(v);
+    gH.appendChild(g);
+  });
+  const hint=document.createElementNS(NS,'text');
+  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+14);hint.setAttribute('font-size','8.5');
+  hint.setAttribute('fill','#9AAAB4');hint.setAttribute('font-family','IBM Plex Mono, monospace');
+  hint.textContent='click to trace actions';gH.appendChild(hint);
+  if(flagUpTo('insGcg',LEVEL)){
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d','M'+(bx+18)+' '+(by+35)+' L'+(bx+18)+' '+(by+51));
+    p.setAttribute('stroke',cssv('--ins'));p.setAttribute('stroke-width','2');p.setAttribute('fill','none');
+    gH.appendChild(p);
+    const cap=document.createElementNS(NS,'path');
+    cap.setAttribute('d','M'+(bx+11)+' '+(by+51)+' L'+(bx+25)+' '+(by+51));
+    cap.setAttribute('stroke',cssv('--ins'));cap.setAttribute('stroke-width','2.4');cap.setAttribute('fill','none');
+    gH.appendChild(cap);
+  }
+}
+function drawRegArrows(){
+  const g=$('regarrows'); g.innerHTML='';
+  ['ins','gcg'].forEach(h=>{const d=$('hdot_'+h); if(d) d.setAttribute('opacity', !focusH||focusH===h?1:.3);});
+  const act = focusH? REGS.filter(r=>r.h===focusH&&flowVisible(r.flow)&&(!r.lv||LEVEL>=r.lv)) : [];
+  const keepNodes=new Set(), keepLabels=new Set();
+  act.forEach(r=>{ (r.nd||[]).forEach(n=>keepNodes.add(n)); keepLabels.add('lab_'+r.flow); });
+
+  // background dimming, with the relevant pieces held back near full strength
+  const dim = focusH? 0.14 : 1;
+  ['flows'].forEach(id=>{const e=$(id); if(e) e.setAttribute('opacity',dim);});
+  const nodesG=$('nodes'); if(nodesG) nodesG.setAttribute('opacity',1);
+  NODES.filter(n=>nodeVisible(n.id)).forEach(n=>{
+    const e=$('nd_'+n.id); if(!e) return;
+    e.setAttribute('opacity', !focusH?1:(keepNodes.has(n.id)?0.92:0.13));
+  });
+  const labG=$('flowlabels'); if(labG) labG.setAttribute('opacity',1);
+  FLOWS.filter(f=>flowVisible(f.id)&&f.lab).forEach(f=>{
+    const e=$('lab_'+f.id); if(!e) return;
+    const on = !focusH || keepLabels.has('lab_'+f.id);
+    e.setAttribute('opacity', on?1:0.12);
+    e.setAttribute('fill', (focusH&&on)? cssv('--'+focusH) : '#71858F');
+    e.setAttribute('font-weight', (focusH&&on)?'600':'400');
+  });
+  const bg=$('badges');
+  if(bg) REGS.filter(x=>flowVisible(x.flow)&&(!x.lv||LEVEL>=x.lv)).forEach((r,i)=>{
+    const c=$('bdg'+i); if(!c) return;
+    if(!focusH){ c.setAttribute('opacity', c.dataset.live||1); c.querySelector('circle').setAttribute('r',(c.dataset.r||8.5)); }
+    else if(r.h===focusH){ c.setAttribute('opacity',1); c.querySelector('circle').setAttribute('r',11); }
+    else { c.setAttribute('opacity',0.1); }
+  });
+  if(!focusH) return;
+
+  // one clear arrow per action, ending at its badge
+  const src = focusH==='ins' ? {x:48,y:432} : {x:48,y:462};
+  act.forEach(r=>{
+    const f=$(r.flow);
+    if(f){ const cl=f.cloneNode(false); cl.removeAttribute('id');
+      cl.setAttribute('stroke',cssv('--'+focusH)); cl.setAttribute('opacity','.9');
+      cl.setAttribute('stroke-width','3.6'); cl.removeAttribute('stroke-dasharray');
+      cl.removeAttribute('stroke-dashoffset'); g.appendChild(cl); }
+    const p=document.createElementNS(NS,'path');
+    const mx=(src.x+r.x)/2, my=Math.min(src.y,r.y)-42;
+    p.setAttribute('d','M'+src.x+' '+src.y+' Q'+mx+' '+my+' '+r.x+' '+r.y);
+    p.setAttribute('stroke',cssv('--'+focusH)); p.setAttribute('stroke-width','1.6');
+    p.setAttribute('fill','none'); p.setAttribute('opacity','.42');
+    p.setAttribute('stroke-dasharray','4 4');
+    g.appendChild(p);
+  });
+  // badges drawn last so they sit on top of everything
+  act.forEach((r,i)=>{ const idx=REGS.filter(x=>flowVisible(x.flow)&&(!x.lv||LEVEL>=x.lv)).indexOf(r);
+    const c=$('bdg'+idx); if(c) c.parentNode.appendChild(c); });
+}
+
+/* ================= RENDER ================= */
+function fmt(key,S,d){
+  const v=VARS[key], raw=v.f(S,d);
+  const val = (ALT&&v.alt)? v.alt.f(raw) : raw;
+  const u   = (ALT&&v.alt)? v.alt.u : v.u;
+  const dp  = key==='pH'?2 : (Math.abs(val)>=100?0 : Math.abs(val)>=10?1:2);
+  return {val, u, txt:val.toFixed(dp)};
+}
+function setFlow(id,rate,scale,col){
+  const p=$(id); if(!p) return;
+  const f=clamp(rate/scale,0,1.25), on=f>0.03;
+  p.setAttribute('stroke-width',(1.3+f*4.3).toFixed(2));
+  p.setAttribute('stroke', on?(col||'#5E7683'):'#C9D6DD');
+  p.setAttribute('opacity', on?1:.45);
+  if(on){
+    if(running) phase[id]=(phase[id]||0)-(0.8+f*5.5);
+    p.setAttribute('stroke-dasharray','10 7');
+    p.setAttribute('stroke-dashoffset',(phase[id]||0).toFixed(1));
+  } else {p.removeAttribute('stroke-dasharray');p.removeAttribute('stroke-dashoffset');}
+}
+const setLvl=(id,fr)=>{const r=$('lv_'+id);if(!r)return;const n=NODES.find(z=>z.id===id);
+  r.setAttribute('width',(clamp01(fr)*n.w).toFixed(1));};
+const setVal=(id,t)=>{const e=$('val_'+id);if(e)e.textContent=t;};
+
+function render(d){
+  setVal('pool', S.G.toFixed(0)+' mg/dL \u00b7 '+(S.G*G_PER_MGDL*4).toFixed(0)+' kcal');
+  setVal('liver',S.liverGly.toFixed(0)+' g \u00b7 '+(S.liverGly*4).toFixed(0)+' kcal');
+  setVal('muscle',S.muscleGly.toFixed(0)+' g \u00b7 '+(S.muscleGly*4).toFixed(0)+' kcal');
+  setVal('adip',(S.fat/1000).toFixed(2)+' kg \u00b7 '+(S.fat*9/1000).toFixed(0)+'k kcal');
+  setVal('prot',(S.protein/1000).toFixed(2)+' kg');
+  setVal('fa',  d.lipo.toFixed(1)+' g/h released');
+  setVal('ket', S.K.toFixed(0)+' mg/dL');
+  const hep=d.oblig*0.25, sys=d.oblig*0.75+d.idUptake, faP=Math.max(0,d.faOxid-d.faToLiver);
+  setVal('lconv','passing '+(hep*4+Math.max(0,d.faToLiver-d.ketoProd)*9).toFixed(0)+' kcal/h');
+  setVal('sconv','passing '+(sys*4+faP*9+d.muscleGlyBurn*4+d.ketoUsed_g*4.5).toFixed(0)+' kcal/h');
+  setVal('lwork',(hep*4+Math.max(0,d.faToLiver-d.ketoProd)*9).toFixed(0)+' kcal/h');
+  setVal('swork',(d.demand-(hep*4+Math.max(0,d.faToLiver-d.ketoProd)*9)).toFixed(0)+' kcal/h');
+  setVal('diet',C.diet===0?'fasting \u00b7 no intake':(C.diet/24).toFixed(0)+' kcal/h in');
+  setLvl('pool',S.G/200);setLvl('liver',S.liverGly/LIVER_MAX);setLvl('muscle',S.muscleGly/MUSCLE_MAX);
+  setLvl('adip',S.fat/20000);setLvl('prot',S.protein/7000);
+
+  const hepGlu=d.oblig*0.25, sysGlu=d.oblig*0.75+d.idUptake;   // display split of one balance term
+  const faPeriph=Math.max(0,d.faOxid-d.faToLiver);
+  setFlow('f_diet_pool',d.dietG,14,cssv('--glu'));
+  setFlow('f_diet_adip',d.dietFat,6,cssv('--fat'));
+  setFlow('f_diet_prot',C.diet*0.15/4/24,2,cssv('--pro'));
+  setFlow('f_pool_adip',d.lipogenesis,2.5,cssv('--fat'));
+  setFlow('f_adip_pool',d.gngGlycerol,2.5,cssv('--glu'));
+  setFlow('f_pool_liver',d.liverStore,5,cssv('--gly'));
+  setFlow('f_liver_pool',d.glycogenolysis,9,cssv('--gly'));
+  setFlow('f_pool_mus',d.muscleStore,7,cssv('--gly'));
+  setFlow('f_mus_sconv',d.muscleGlyBurn,25,cssv('--gly'));
+  setFlow('f_prot_pool',d.gngAA+d.gngGlycerol,4,cssv('--pro'));
+  setFlow('f_pool_lconv',hepGlu,4,cssv('--glu'));
+  setFlow('f_pool_sconv',sysGlu,13,cssv('--glu'));
+  setFlow('f_adip_fa',d.lipo,13,cssv('--fat'));
+  setFlow('f_fa_lconv',d.faToLiver,6,cssv('--fa'));
+  setFlow('f_fa_sconv',faPeriph,6,cssv('--fa'));
+  setFlow('f_lconv_ket',d.ketoProd,3.5,cssv('--ket'));
+  setFlow('f_ket_sconv',d.ketoUsed_g,3.5,cssv('--ket'));
+  setFlow('f_lconv_work',(hepGlu*4+d.faToLiver*9-d.ketoProd*9)/40,4,cssv('--conv'));
+  setFlow('f_sconv_work',(sysGlu*4+faPeriph*9+d.muscleGlyBurn*4+d.ketoUsed_g*4.5)/60,4,cssv('--conv'));
+
+  const st=$('sconvtxt');
+  if(st){const share=clamp01(((sys*4+faP*9+d.muscleGlyBurn*4+d.ketoUsed_g*4.5))/Math.max(d.demand,1));
+    st.textContent='supplying '+(share*100).toFixed(0)+'% of total demand';}
+  const cb=$('capbar');
+  if(cb){const conv=NODES.find(z=>z.id==='lconv'),L=d.gateLoad;
+    cb.setAttribute('width',(clamp01(L)*(conv.w-70)).toFixed(1));
+    cb.setAttribute('fill',L>=1?cssv('--ket'):cssv('--conv'));
+    const ct=$('captxt');
+    ct.textContent=L>=1?'gateway at '+(L*100).toFixed(0)+'% \u2014 overflow routed to ketones'
+                       :'gateway at '+(L*100).toFixed(0)+'% of capacity';
+    ct.setAttribute('fill',L>=1?cssv('--ket'):'#71858F');}
+
+  // badge intensity from how hard each hormone is driving its flow
+  if(flagUpTo('regs',LEVEL)){
+    const drive={glycogenolysis:d.glycogenolysis/9,liverStore:d.liverStore/3,idUptake:d.idUptake/12,
+      lipogenesis:d.lipogenesis/2,insBrake:1-d.ins,lipo:d.lipo/11,gngAA:d.gngAA/2,ketoProd:d.ketoProd/3};
+    REGS.filter(r=>flowVisible(r.flow)&&(!r.lv||LEVEL>=r.lv)).forEach((r,i)=>{
+      const g=$('bdg'+i); if(!g) return;
+      const a=clamp01(drive[r.k]||0);
+      g.dataset.live=(0.28+0.72*a).toFixed(2); g.dataset.r=(7+2.4*a).toFixed(1);
+      if(!focusH){ g.setAttribute('opacity',g.dataset.live); g.querySelector('circle').setAttribute('r',g.dataset.r); }
+    });
+    const hi=$('hval_ins'), hg=$('hval_gcg');
+    if(hi){const f1=fmt('insUU',S,d); hi.textContent=f1.txt+' '+f1.u;}
+    if(hg){const f2=fmt('gcgPg',S,d); hg.textContent=f2.txt+' '+f2.u;}
+  }
+  renderReadouts(d); renderAlerts(d); renderLedgers(d); renderRes(d); drawStrip();
+  if(activeMod) updateModStatus();
+  $('clockHint').textContent = running? 'running \u00b7 '+speed+' h per second'
+      : (dirty? 'paused \u2014 press Run or Advance to see the effect' : 'paused');
+  $('clockHint').style.color = (!running&&dirty)? cssv('--warn') : '';
+}
+
+function renderReadouts(d){
+  const keys=READOUTS.filter(k=>VARS[k].lv<=LEVEL);
+  const el=$('readouts');
+  if(el.dataset.keys!==keys.join()){
+    el.dataset.keys=keys.join();
+    el.innerHTML=keys.map(k=>'<div class="ro" id="ro_'+k+'"><div class="k">'+VARS[k].lab.replace('Plasma ','')+
+      '</div><div class="v" id="rov_'+k+'">\u2014</div><div class="nr" id="roa_'+k+'"></div><div class="nr" id="ron_'+k+'"></div></div>').join('')+
+      '<div class="ro"><div class="k">Elapsed</div><div class="v" id="rov_t">0</div><div class="nr" id="ron_t"></div></div>';
+  }
+  keys.forEach(k=>{
+    const f=fmt(k,S,d), v=VARS[k];
+    $('rov_'+k).innerHTML=f.txt+(f.u?'<span class="u">'+f.u+'</span>':'');
+    const a=v.alt? (' \u00b7 '+v.alt.f(v.f(S,lastD)).toFixed(v.alt.u.includes('mol')?(k==='gcgPg'?1:2):0)+' '+v.alt.u) : '';
+    $('roa_'+k).textContent=a;
+    if(v.nr){
+      const lo=(ALT&&v.alt)?v.alt.f(v.nr[0]):v.nr[0], hi=(ALT&&v.alt)?v.alt.f(v.nr[1]):v.nr[1];
+      const dp=k==='pH'?2:(hi>=100?0:1);
+      $('ron_'+k).textContent='normal '+lo.toFixed(dp)+'\u2013'+hi.toFixed(dp);
+      const out = f.val<lo||f.val>hi;
+      const bad = k==='pH'? f.val<7.30 : (k==='G'? (f.val>(ALT?10:180)||f.val<(ALT?3.9:70)) : (k==='K'? f.val>(ALT?5.8:60):out));
+      $('ro_'+k).className='ro'+(bad?' flag':(out?' warnf':''));
+    } else { $('ron_'+k).textContent=''; $('ro_'+k).className='ro'; }
+  });
+  $('rov_t').innerHTML = S.t<48? S.t.toFixed(1)+'<span class="u">h</span>' : (S.t/24).toFixed(1)+'<span class="u">days</span>';
+}
+
+function renderAlerts(d){
+  const A=[];
+  if(S.G>300)A.push(['bad','severe hyperglycaemia']); else if(S.G>180)A.push(['warn','hyperglycaemia']);
+  if(S.G<55)A.push(['bad','severe hypoglycaemia']); else if(S.G<70)A.push(['warn','hypoglycaemia']);
+  if(d.renal>0.2)A.push(['warn','glucose lost in urine']);
+  if(LEVEL>=2){
+    if(S.liverGly<4)A.push(['info','liver glycogen depleted']); else if(S.liverGly<25)A.push(['info','liver glycogen low']);
+    if(S.muscleGly<40)A.push(['info','muscle glycogen depleted']);
+    if(d.proteo>1.2)A.push(['warn','cell protein being catabolised']);
+  }
+  if(LEVEL>=3&&d.ins<0.03)A.push(['bad','no insulin present']);
+  if(LEVEL>=5){
+    if(d.gateLoad>=1)A.push(['info','hepatic gateway saturated']);
+    if(S.K>60)A.push(['bad','marked ketonaemia']); else if(S.K>10)A.push(['info','ketosis']);
+    if(d.pH<7.30)A.push(['bad','ketoacidosis']); else if(d.pH<7.35)A.push(['warn','mild acidosis']);
+  }
+  if(C.gcgBlock)A.push(['info','glucagon action blocked']);
+  if(C.glp1>0)A.push(['info','GLP-1 agonist active']);
+  if((C.insSens===undefined?1:C.insSens)<0.95)A.push(['info','reduced insulin sensitivity']);
+  if(S.t>=T_MAX)A.push(['bad','time limit reached \u2014 reset to continue']);
+  else if(S.t>336)A.push(['warn','beyond the range this model is calibrated for']);
+  if(!A.length&&S.G>=70&&S.G<=140)A.push(['good','all variables within normal range']);
+  $('alerts').innerHTML=A.map(x=>'<span class="pill '+x[0]+'">'+x[1]+'</span>').join('');
+}
+
+const LEDA=[{k:'glu',n:'Glucose taken up',v:'--glu'},{k:'mg',n:'Muscle glycogen (local)',v:'--gly'},
+            {k:'fa',n:'Fatty acids',v:'--fa'},{k:'ket',n:'Ketone bodies',v:'--ket'}];
+const LEDB=[{k:'d',n:'Dietary carbohydrate',v:'--diet'},{k:'gl',n:'Liver glycogen',v:'--gly'},
+            {k:'gy',n:'Glycerol from fat',v:'--fat'},{k:'aa',n:'Amino acids',v:'--pro'},
+            {k:'la',n:'Recycled lactate',v:'--fa'}];
+function drawLedger(bar,keys,tot,defs,vals,unit,f){
+  const T=vals.reduce((a,b)=>a+b,0)||1e-9;
+  if(bar.children.length!==defs.length){
+    bar.innerHTML='';keys.innerHTML='';
+    defs.forEach(x=>{const s=document.createElement('div');s.className='sf';s.style.background=cssv(x.v);
+      s.appendChild(document.createElement('span'));bar.appendChild(s);
+      const k=document.createElement('div');k.className='kk';
+      k.innerHTML='<span class="sw2" style="background:'+cssv(x.v)+'"></span>'+x.n+' <span class="kv" data-k="'+x.k+'"></span>';
+      keys.appendChild(k);});
+  }
+  defs.forEach((x,i)=>{const pct=vals[i]/T*100,s=bar.children[i];
+    s.style.width=pct.toFixed(2)+'%';s.classList.toggle('wide',pct>11);
+    s.firstChild.textContent=pct>11?pct.toFixed(0)+'%':'';
+    keys.querySelector('[data-k="'+x.k+'"]').textContent=vals[i].toFixed(1)+' '+unit;});
+  tot.textContent=f(T);
+}
+function renderLedgers(d){
+  drawLedger($('ledA'),$('ledA-keys'),$('ledA-tot'),LEDA,
+    [(d.oblig+d.idUptake)*4,d.muscleGlyBurn*4,d.faOxid*9,d.ketoUsed_g*4.5],'kcal/h',
+    t=>t.toFixed(0)+' kcal/h reaching cells');
+  drawLedger($('ledB'),$('ledB-keys'),$('ledB-tot'),LEDB,
+    [d.dietG,d.glycogenolysis,d.gngGlycerol,d.gngAA,d.lactate*(0.55+0.75*S.gngAdapt)],'g/h',
+    t=>t.toFixed(1)+' g glucose/h entering blood');
+}
+function renderRes(d){
+  const rows=[['Blood glucose',S.G*G_PER_MGDL*4,120,'--glu',(S.G*G_PER_MGDL).toFixed(1)+' g',1],
+   ['Liver glycogen',S.liverGly*4,LIVER_MAX*4,'--gly',S.liverGly.toFixed(0)+' g',2],
+   ['Muscle glycogen',S.muscleGly*4,MUSCLE_MAX*4,'--fa',S.muscleGly.toFixed(0)+' g',2],
+   ['Adipose lipid',S.fat*9,20000*9,'--fat',(S.fat/1000).toFixed(2)+' kg',2],
+   ['Cell protein',S.protein*4,7000*4,'--pro',(S.protein/1000).toFixed(2)+' kg',2]].filter(r=>r[5]<=LEVEL);
+  const el=$('resList');
+  if(el.children.length!==rows.length){
+    el.innerHTML=rows.map((r,i)=>'<div style="margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">'+
+      '<span>'+r[0]+'</span><span class="mono" style="color:var(--muted)" id="rq'+i+'"></span></div>'+
+      '<div style="height:7px;border-radius:4px;background:#E9EEF1;overflow:hidden">'+
+      '<div id="rb'+i+'" style="height:100%;width:0;background:'+cssv(r[3])+';opacity:.75;transition:width .3s"></div></div>'+
+      '<div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px" id="rk'+i+'"></div></div>').join('');
+  }
+  rows.forEach((r,i)=>{$('rb'+i).style.width=(clamp01(r[1]/r[2])*100).toFixed(1)+'%';
+    $('rq'+i).textContent=r[4];
+    $('rk'+i).textContent=(r[1]>=1000?(r[1]/1000).toFixed(1)+'k':r[1].toFixed(0))+' kcal \u00b7 '+
+      (r[1]/Math.max(d.demand,1)).toFixed(1)+' h at current demand';});
+}
+
+/* ================= PLOTS ================= */
+function plot(cv,ivKey,dvKeys,runs,small){
+  const dpr=window.devicePixelRatio||1,w=cv.clientWidth||300,h=small?104:420;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
+  const L=small?36:52,R=small?8:14,T=small?8:14,B=small?18:30,pw=w-L-R,ph=h-T-B;
+  const all=runs.flat();
+  if(all.length<2){g.fillStyle='#9AAAB4';g.textAlign='center';
+    g.font=(small?'10px':'12px')+' IBM Plex Sans, sans-serif';
+    g.fillText(small?'no data yet':'Run the simulation to record data',L+pw/2,T+ph/2);return;}
+  const conv=k=>{const v=VARS[k];return raw=>(ALT&&v.alt)?v.alt.f(raw):raw;};
+  const cx=conv(ivKey);
+  const xs=all.map(p=>cx(p[ivKey]));
+  let x0=Math.min(...xs),x1=Math.max(...xs); if(x1-x0<1e-9)x1=x0+1;
+  let y0=Infinity,y1=-Infinity;
+  dvKeys.forEach(k=>{const cy=conv(k);all.forEach(p=>{const v=cy(p[k]);if(v<y0)y0=v;if(v>y1)y1=v;});});
+  const pad=(y1-y0)*0.12||1; y0-=pad; y1+=pad;
+  if(dvKeys.length===1&&VARS[dvKeys[0]].nr){
+    const v=VARS[dvKeys[0]],cy=conv(dvKeys[0]);
+    y0=Math.min(y0,cy(v.nr[0])-pad);y1=Math.max(y1,cy(v.nr[1])+pad);
+  }
+  const X=v=>L+(v-x0)/(x1-x0)*pw, Y=v=>T+ph-clamp((v-y0)/(y1-y0),0,1)*ph;
+  if(dvKeys.length===1&&VARS[dvKeys[0]].nr){
+    const v=VARS[dvKeys[0]],cy=conv(dvKeys[0]);
+    const a=Y(cy(v.nr[1])),b=Y(cy(v.nr[0]));
+    g.fillStyle=cssv('--conv')+'14';g.fillRect(L,a,pw,b-a);
+  }
+  g.strokeStyle='#E4EBEF';g.lineWidth=1;g.font=(small?'8.5px':'10px')+' IBM Plex Mono, monospace';g.fillStyle='#9AAAB4';
+  for(let i=0;i<=4;i++){const y=T+ph*i/4;g.beginPath();g.moveTo(L,y);g.lineTo(w-R,y);g.stroke();
+    const v=y1-(y1-y0)*i/4;g.textAlign='right';
+    g.fillText(Math.abs(v)>=100?v.toFixed(0):v.toFixed(Math.abs(v)>=10?1:2),L-5,y+3);}
+  runs.forEach((run,ri)=>{
+    dvKeys.forEach((k,ki)=>{const cy=conv(k);
+      g.beginPath();g.lineWidth=ri===runs.length-1?1.9:1.3;
+      g.strokeStyle=cssv(VARS[k].col)|| '#5E7683';
+      g.globalAlpha=ri===runs.length-1?1:0.42;
+      if(ki===1)g.setLineDash([5,4]); else g.setLineDash([]);
+      run.forEach((p,i)=>{const X2=X(cx(p[ivKey])),Y2=Y(cy(p[k]));i?g.lineTo(X2,Y2):g.moveTo(X2,Y2);});
+      g.stroke();g.globalAlpha=1;g.setLineDash([]);});
+  });
+  g.fillStyle='#9AAAB4';g.textAlign='center';g.font=(small?'8.5px':'9.5px')+' IBM Plex Mono, monospace';
+  g.fillText(x0.toFixed(x1>48?0:1),L,h-(small?5:16));
+  g.fillText(x1.toFixed(x1>48?0:1),w-R,h-(small?5:16));
+  if(!small){
+    const iv=VARS[ivKey],u=(ALT&&iv.alt)?iv.alt.u:iv.u;
+    g.fillText(iv.lab+(u?' ('+u+')':''),L+pw/2,h-6);
+  }
+}
+let GRAPHS=[{iv:'t',dv:'G'},{iv:'t',dv:'insUU'},{iv:'t',dv:'gcgPg'}];
+let bigIdx=0;
+function defaultGraphs(){
+  GRAPHS = LEVEL>=5? [{iv:'t',dv:'G'},{iv:'t',dv:'K'},{iv:'t',dv:'pH'}]
+        : LEVEL>=3? [{iv:'t',dv:'G'},{iv:'t',dv:'insUU'},{iv:'t',dv:'gcgPg'}]
+        : LEVEL>=2? [{iv:'t',dv:'G'},{iv:'t',dv:'liverGly'},{iv:'t',dv:'fat'}]
+        : [{iv:'t',dv:'G'},{iv:'t',dv:'MR'}];
+  bigIdx=0;
+}
+function varOpts(sel,excludeT){
+  return Object.keys(VARS).filter(k=>VARS[k].lv<=LEVEL&&(!excludeT||k!=='t'))
+    .map(k=>'<option value="'+k+'"'+(k===sel?' selected':'')+'>'+VARS[k].lab+'</option>').join('');
+}
+function graphGridHTML(pfx){
+  return GRAPHS.map((g,i)=>'<div class="mini" data-i="'+i+'">'+
+    '<div class="mrow"><select data-r="iv" data-i="'+i+'">'+varOpts(g.iv,false)+'</select>'+
+    '<span class="vs">vs</span><select data-r="dv" data-i="'+i+'">'+varOpts(g.dv,true)+'</select>'+
+    '<button class="xg" data-x="'+i+'" title="remove">\u00d7</button></div>'+
+    '<canvas id="'+pfx+i+'"></canvas></div>').join('')+
+    '<div class="mini addg"><button class="btn" data-add="1">+ Add graph</button></div>';
+}
+function wireGrid(root,pfx){
+  root.querySelectorAll('select').forEach(sel=>sel.addEventListener('change',e=>{
+    GRAPHS[+e.target.dataset.i][e.target.dataset.r]=e.target.value; refreshGraphs();}));
+  root.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>{
+    if(GRAPHS.length<=1)return; GRAPHS.splice(+b.dataset.x,1); bigIdx=0; refreshGraphs();}));
+  root.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{
+    GRAPHS.push({iv:'t',dv:'G'}); refreshGraphs();}));
+  root.querySelectorAll('canvas').forEach(cv=>cv.addEventListener('click',()=>{
+    bigIdx=+cv.id.replace(pfx,''); drawBig();
+    if(!$('tab-graphs').classList.contains('active')) $('t2').click();}));
+}
+function buildStrip(){
+  const el=$('strip'); el.innerHTML=graphGridHTML('mc'); wireGrid(el,'mc');
+  const gg=$('ggrid'); if(gg){gg.innerHTML=graphGridHTML('gc'); wireGrid(gg,'gc');}
+}
+function refreshGraphs(){ buildStrip(); drawStrip(); drawBig(); }
+function drawStrip(){
+  GRAPHS.forEach((g,i)=>{
+    const a=$('mc'+i); if(a) plot(a,g.iv,[g.dv],[hist],true);
+    const b=$('gc'+i); if(b) plot(b,g.iv,[g.dv],snaps.map(x=>x.data).concat([hist]),true);
+  });
+}
+function drawBig(){
+  const g=GRAPHS[Math.min(bigIdx,GRAPHS.length-1)]; if(!g) return;
+  plot($('bigPlot'),g.iv,[g.dv],snaps.map(x=>x.data).concat([hist]),false);
+  $('gTitle').textContent=VARS[g.dv].lab+' vs '+VARS[g.iv].lab;
+  $('gLeg').innerHTML='<span style="color:'+cssv(VARS[g.dv].col)+'">\u25a0</span> '+VARS[g.dv].lab+
+    (snaps.length?'  \u00b7 faded lines are saved runs':'');
+}
+
+/* ================= HISTORY ================= */
+function record(){
+  const e={}; Object.keys(VARS).forEach(k=>{e[k]=VARS[k].f(S,lastD);});
+  hist.push(e); if(hist.length>2000) hist=hist.filter((_,i)=>i%2===0);
+}
+
+/* ================= CONTROLS ================= */
+const CTLDEF={
+ diet:()=>`<div class="ctl"><label class="lab" for="cDiet">Food intake <span class="val" id="vDiet"></span></label>
+   <input type="range" id="cDiet" min="0" max="3500" step="50" value="${C.diet}">
+   <div class="desc">Delivered continuously. Set to 0 to begin a fast.</div></div>`,
+ activity:()=>`<div class="ctl"><label class="lab">Workload <span class="val" id="vAct"></span></label>
+   <div class="seg" id="cAct" role="group" aria-label="Workload">
+   <button data-a="1">Rest</button><button data-a="2">Light</button>
+   <button data-a="4">Moderate</button><button data-a="8">Intense</button></div>
+   <div class="desc">Sets metabolic rate \u2014 the sink every reservoir drains toward.</div></div>`,
+ beta:()=>`<div class="ctl"><label class="lab" for="cBeta">Insulin production (beta-cell capacity) <span class="val" id="vBeta"></span></label>
+   <input type="range" id="cBeta" min="0" max="100" step="5" value="${C.betaFn*100}">
+   <div class="desc">Beta-cell capacity, as a fraction of normal.</div></div>`,
+ gluInf:()=>`<div class="ctl"><label class="lab" for="cGlu">Glucose infusion <span class="val" id="vGlu"></span></label>
+   <input type="range" id="cGlu" min="0" max="1000" step="50" value="${C.glucoseInf}">
+   <div class="desc">Intravenous glucose, 0\u20131,000 mg/min.</div></div>`,
+ insInf:()=>`<div class="ctl"><label class="lab" for="cInf">Insulin infusion <span class="val" id="vInf"></span></label>
+   <input type="range" id="cInf" min="0" max="40" step="1" value="${C.insulinInf}">
+   <div class="desc">Insulin given from outside the body. ~20 mU/min replaces basal secretion.</div></div>`,
+ glp1:()=>`<div class="ctl"><label class="lab" for="cGlp">GLP-1 agonist <span class="val" id="vGlp"></span></label>
+   <input type="range" id="cGlp" min="0" max="100" step="5" value="${(C.glp1||0)*100}">
+   <div class="desc">An incretin mimetic. Raises insulin secretion only when glucose is elevated, suppresses glucagon, and slows gastric emptying.</div></div>`,
+ insSens:()=>`<div class="ctl"><label class="lab" for="cSens">Insulin sensitivity <span class="val" id="vSens"></span></label>
+   <input type="range" id="cSens" min="15" max="100" step="5" value="${(C.insSens===undefined?1:C.insSens)*100}">
+   <div class="desc">How strongly tissues respond to the insulin that is present. Reduced sensitivity with intact secretion is the picture in type 2 diabetes.</div></div>`,
+ gcgBlock:()=>`<div class="ctl"><button class="toggle" id="cBlock" aria-pressed="${C.gcgBlock}">
+   <span class="sw"></span><span class="tt"><b>Glucagon receptor blocker</b><span>Blocks glucagon's action on liver and adipose. Plasma glucagon still reads high.</span></span></button></div>`
+};
+const ACTN={1:'Rest',2:'Light',4:'Moderate',8:'Intense'};
+function buildControls(){
+  const list=upto('ctl',LEVEL).filter(k=>typeof CTLDEF[k]==='function');
+  $('controlBody').innerHTML=list.map(k=>{try{return CTLDEF[k]();}catch(e){console.warn('control',k,e);return '';}}).join('');
+  if($('cDiet'))$('cDiet').addEventListener('input',e=>{C.diet=+e.target.value;syncUI();});
+  if($('cAct'))$('cAct').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;C.activity=+b.dataset.a;syncUI();});
+  if($('cBeta'))$('cBeta').addEventListener('input',e=>{C.betaFn=+e.target.value/100;syncUI();});
+  if($('cGlu'))$('cGlu').addEventListener('input',e=>{C.glucoseInf=+e.target.value;syncUI();});
+  if($('cInf'))$('cInf').addEventListener('input',e=>{C.insulinInf=+e.target.value;syncUI();});
+  if($('cSens'))$('cSens').addEventListener('input',e=>{C.insSens=+e.target.value/100;syncUI();});
+  if($('cGlp'))$('cGlp').addEventListener('input',e=>{C.glp1=+e.target.value/100;syncUI();});
+  if($('cBlock'))$('cBlock').addEventListener('click',()=>{C.gcgBlock=!C.gcgBlock;syncUI();});
+  syncUI();
+}
+function syncUI(){ dirty=!running;
+  if($('cDiet')){$('cDiet').value=C.diet;$('vDiet').textContent=C.diet===0?'fasting':C.diet+' kcal/day';}
+  if($('cAct')){[...$('cAct').children].forEach(x=>x.setAttribute('aria-pressed',+x.dataset.a===C.activity?'true':'false'));
+    $('vAct').textContent=ACTN[C.activity]+' \u00b7 '+(BMR*C.activity)+' kcal/h';}
+  if($('cBeta')){$('cBeta').value=C.betaFn*100;$('vBeta').textContent=(C.betaFn*100).toFixed(0)+'%';}
+  if($('cGlu')){$('cGlu').value=C.glucoseInf;$('vGlu').textContent=C.glucoseInf+' mg/min';}
+  if($('cInf')){$('cInf').value=C.insulinInf;$('vInf').textContent=C.insulinInf+' mU/min';}
+  if($('cSens')){const v=(C.insSens===undefined?1:C.insSens);$('cSens').value=v*100;$('vSens').textContent=(v*100).toFixed(0)+'%';}
+  if($('cGlp')){$('cGlp').value=(C.glp1||0)*100;$('vGlp').textContent=((C.glp1||0)*100).toFixed(0)+'%';}
+  if($('cBlock'))$('cBlock').setAttribute('aria-pressed',C.gcgBlock?'true':'false');
+}
+
+/* ================= SETUP HELPERS ================= */
+function baseC(){return {diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0,insSens:1};}
+function applyScen(sc){
+  if(sc.reset){S=newState();hist=[];lastD=null;C=baseC();}
+  Object.assign(C,sc.C||{});
+  if(sc.ff) advance(sc.ff,true);
+  buildControls();
+  if(!lastD)lastD=step(S,C,1e-6);
+  render(lastD);drawBig();
+}
+function advance(hours,silent){ dirty=false;
+  const dt=0.02;
+  for(let i=0;i<hours/dt&&S.t<T_MAX;i++){lastD=step(S,C,dt); if(i%10===0){record();checkCases();}}
+  record();
+  if(!silent){render(lastD);drawBig();checkCases();}
+}
+
+/* ================= MODULES ================= */
+const MODULES=[
+ {id:'pool',lv:1,kind:'investigate',t:'The size of the pool',
+  brief:'The blood glucose pool is often described as a store. The reservoir panel reports how much energy each compartment holds, and how long it would last at the current rate of demand.',
+  det:'Determine how long circulating glucose alone could meet demand at rest, and how that changes at an intense workload.',
+  setup:{reset:1,C:{diet:2250,activity:1}}},
+
+ {id:'fast24',lv:2,kind:'investigate',t:'Twenty-four hours without food',
+  brief:'A healthy subject stops eating. Everything else is left at its default.',
+  det:'Determine what happens to plasma glucose over the first 12 hours and over the following 12, and which reserve accounts for what you see.',
+  setup:{reset:1,C:{diet:0,activity:1}}},
+
+ {id:'work',lv:2,kind:'investigate',t:'Working muscle',
+  brief:'The same subject, fasted, is put to work at eight times resting demand.',
+  det:'Determine which reserve supplies most of the energy, and which one is barely touched. Account for the difference.',
+  setup:{reset:1,C:{diet:0,activity:8}}},
+
+ {id:'horm',lv:3,kind:'investigate',t:'The hormone response',
+  brief:'Insulin and glucagon are now visible. Both respond to plasma glucose, but not in the same way.',
+  det:'Run a fast and determine how each hormone changes. Then plot each against plasma glucose rather than against time, and determine how the shapes of the two curves differ.',
+  setup:{reset:1,C:{diet:0,activity:1}}},
+
+ {id:'gcgreach',lv:3,kind:'investigate',t:'What glucagon reaches',
+  brief:'Clicking a hormone in the diagram traces every flow it acts on. Badges brighten and grow as that hormone drives its flow harder.',
+  det:'Determine which flows glucagon acts on during a fast, and identify the one reserve it cannot draw glucose from. Account for why not.',
+  setup:{reset:1,C:{diet:0,activity:1}}},
+
+ {id:'gtt',lv:4,kind:'investigate',t:'Glucose tolerance',
+  brief:'The subject has fasted for 24 hours. The infusion pump delivers up to 1,000 mg of glucose per minute.',
+  det:'Deliver a 60 g glucose load and determine how long it takes plasma glucose to fall back below 140 mg/dL.',
+  setup:{reset:1,C:{diet:0,activity:1},ff:24}},
+
+ {id:'noins',lv:4,kind:'investigate',t:'Removing insulin',
+  brief:'The insulin production control sets beta-cell capacity as a fraction of normal. At zero, the pancreas releases no insulin \u2014 untreated type 1 diabetes.',
+  det:'Set insulin production to zero while the subject keeps eating. Determine which flows stop, which continue unchanged, and where the energy reaching cells now comes from.',
+  setup:{reset:1,C:{diet:2250,betaFn:0}}},
+
+ {id:'thresh',lv:4,kind:'challenge',t:'Finding the threshold',
+  brief:'Ketoacidosis is often described as the consequence of high blood glucose. Insulin production can be set anywhere between zero and normal.',
+  det:'Produce a subject whose plasma glucose stays above 180 mg/dL while arterial pH stays above 7.35, and hold that state. Then determine the level of insulin production at which acidosis first appears.',
+  setup:{reset:1,C:{diet:2600,betaFn:0.35}},
+  check:(S,d)=>S.G>180&&d.pH>=7.35&&C.betaFn<1, hold:4,
+  debrief:'Hyperglycaemia and ketoacidosis came apart. A small amount of insulin was enough to prevent one while doing very little about the other. Which flow was that residual insulin restraining?'},
+
+ {id:'starve',lv:5,kind:'challenge',t:'Five days without food',
+  brief:'A healthy 70 kg adult enters a supervised five-day fast. Water is freely available.',
+  det:'Run the fast out to five days. Determine whether rising ketoacids necessarily mean falling pH, and account for what you find.',
+  setup:{reset:1,C:{diet:0,activity:1}},
+  check:(S,d)=>S.t>=120&&d.pH>=7.35&&S.K>10, hold:0,
+  debrief:'Ketone production rose steadily and pH held. The tissues that consume ketones have a maximum rate \u2014 look at what happens to the gap between production and clearance as concentration climbs.'},
+
+ {id:'dka',lv:6,kind:'patient',t:'Patient A \u00b7 19 years',
+  chart:{mrn:'Case 1 \u00b7 type 1 diabetes \u00b7 fictional',
+   vit:[['Plasma glucose','420 mg/dL','70\u2013100',1],['Arterial pH','7.18','7.35\u20137.45',1],
+        ['Urine ketones','strongly positive','negative',1],['Respiratory rate','28/min','12\u201318',1]]},
+  brief:'Brought to the emergency department by a roommate. Respiratory infection for three days; has not eaten or taken insulin in that time. Breathing is deep and rapid, and the breath has a faintly sweet odour.',
+  det:'Bring plasma glucose below 180 mg/dL and arterial pH above 7.35, and hold both there for 4 simulated hours.',
+  setup:{reset:1,C:{diet:2250,betaFn:0},ff:36},
+  check:(S,d)=>S.G<180&&d.pH>7.35, hold:4,
+  debrief:'One intervention corrected several abnormalities at once. Trace the path on the diagram: what did the hormone you supplied switch off, and how many separate flows changed as a result?'},
+
+ {id:'hypo',lv:6,kind:'patient',t:'Patient B \u00b7 20 years',
+  chart:{mrn:'Case 2 \u00b7 type 1 diabetes \u00b7 fictional',
+   vit:[['Plasma glucose','48 mg/dL','70\u2013100',1],['Arterial pH','7.39','7.35\u20137.45',0],
+        ['Urine ketones','negative','negative',0]]},
+  brief:'Took a usual morning insulin dose. Shaky, sweating, and confused on arrival. The team is considering sepsis, adrenal insufficiency, and an insulin overdose.',
+  det:'Return plasma glucose to the normal range and hold it there for 4 simulated hours.',
+  setup:{reset:1,C:{diet:0,betaFn:0,insulinInf:20},ff:5},
+  check:(S,d)=>S.G>=70&&S.G<=140, hold:4,
+  debrief:'The insulin was never the problem on its own \u2014 it was insulin without the thing it was dosed for. Compare this record with a healthy 24-hour fast: both went without food, but only one dropped this far. What was different?'},
+
+ {id:'antag',lv:6,kind:'investigate',t:'An investigational drug',
+  brief:'Glucagon receptor antagonists block glucagon\u2019s action at its target cells. They reproduce the effect of insulin\u2019s inhibition of glucagon, and nothing else that insulin does. The subject loaded below is in ketoacidosis.',
+  det:'Before you switch the blocker on, predict what will happen to plasma glucose, ketoacids, and arterial pH. Then run it. One of the three will not fully correct \u2014 determine which, and account for it.',
+  setup:{reset:1,C:{diet:2250,betaFn:0},ff:36}}
+];
+const KINDN={investigate:'investigate',challenge:'challenge',patient:'patient'};
+let activeMod=null, modHold=0, modHoldStart=null;
+const modDone={};
+
+function buildModules(){
+  const list=MODULES.filter(m=>m.lv===LEVEL);
+  $('cases').innerHTML=list.map(m=>`<div class="card modcard${modDone[m.id]?' done':''}" id="mod_${m.id}">
+    ${m.chart?`<div class="chart-h"><div class="nm">${m.t}</div><div class="mrn">${m.chart.mrn}</div></div>`:''}
+    <div class="card-h"${m.chart?' style="border-top:0"':''}>
+      <h3>${m.chart?'Presentation':m.t}</h3>
+      <span class="kind ${m.kind==='challenge'?'ch':m.kind==='patient'?'pt':''}">Level ${m.lv} \u00b7 ${KINDN[m.kind]}</span>
+    </div>
+    <div class="card-b">
+      <p class="brief">${m.brief}</p>
+      ${m.chart?`<table class="vitals">${m.chart.vit.map(v=>`<tr><td>${v[0]}</td><td class="${v[3]?'ab':''}">${v[1]}</td><td>${v[2]}</td></tr>`).join('')}</table>`:''}
+      <div class="goal"><b>Task.</b> <span class="det">${m.det}</span></div>
+      <div class="runbar"><button class="btn primary" data-mod="${m.id}">Open module</button></div>
+      ${m.debrief?`<div class="debrief" id="db_${m.id}"><p><b>Debrief.</b> ${m.debrief}</p></div>`:''}
+    </div></div>`).join('');
+  const done=MODULES.filter(m=>m.lv<LEVEL).length, tot=MODULES.length;
+  $('cases').insertAdjacentHTML('afterbegin','<div class="card" style="grid-column:1/-1"><div class="card-b" '+
+    'style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'+
+    '<span style="font-size:13px;color:var(--ink-2)"><b style="font-family:Space Grotesk,sans-serif">Level '+LEVEL+
+    ' \u00b7 '+LEVELS[LEVEL].name+'</b> \u2014 '+list.length+' module'+(list.length===1?'':'s')+
+    ' at this level. Earlier levels have their own; use the level bar above to move between them.</span>'+
+    '<span class="mono" style="font-size:11px;color:var(--muted)">'+done+' of '+tot+' modules lie below this level</span></div></div>');
+  $('cases').querySelectorAll('[data-mod]').forEach(b=>b.addEventListener('click',()=>openMod(b.dataset.mod)));
+  if(activeMod&&modDone[activeMod.id]){const db=$('db_'+activeMod.id); if(db)db.classList.add('show');}
+}
+let pendingMod=null;
+function openMod(id){
+  const m=MODULES.find(x=>x.id===id); if(!m) return;
+  pendingMod=m;
+  $('brief_kind').textContent='Level '+m.lv+' \u00b7 '+KINDN[m.kind];
+  $('brief_title').textContent=m.t;
+  $('brief_body').textContent=m.brief;
+  $('brief_det').textContent=m.det;
+  $('brief_chart').innerHTML=m.chart?'<div class="chart-h" style="margin:-28px -30px 16px;border-radius:14px 14px 0 0"><div class="nm">'+m.t+'</div><div class="mrn">'+m.chart.mrn+'</div></div>':'';
+  $('brief_vit').innerHTML=m.chart?'<table class="vitals">'+m.chart.vit.map(v=>'<tr><td>'+v[0]+'</td><td class="'+(v[3]?'ab':'')+'">'+v[1]+'</td><td>'+v[2]+'</td></tr>').join('')+'</table>':'';
+  $('brief').style.display='flex';
+}
+function startMod(m){
+  activeMod=m; modHold=0; modHoldStart=null;
+  if(m.lv>LEVEL){LEVEL=m.lv;rebuild();}
+  applyScen(m.setup);
+  $('modbanner').style.display='';
+  $('mb_lv').textContent='Level '+m.lv+' \u00b7 '+KINDN[m.kind];
+  $('mb_title').textContent=m.t;
+  $('mb_det').textContent=m.det;
+  updateModStatus();
+  $('t1').click();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeMod(){activeMod=null;modHold=0;modHoldStart=null;$('modbanner').style.display='none';}
+function updateModStatus(){
+  const el=$('mb_status'); if(!activeMod||!el) return;
+  if(!activeMod.check){el.className='status';
+    el.textContent='Open investigation \u2014 record your findings in the lab assignment.';return;}
+  if(modDone[activeMod.id]){el.className='status won';el.textContent='\u2713 complete';return;}
+  if(lastD&&activeMod.check(S,lastD)){
+    if(!activeMod.hold){markDone();return;}
+    el.className='status';
+    el.textContent='target met \u2014 holding '+modHold.toFixed(0)+' of '+activeMod.hold+' h';
+  } else {el.className='status';el.textContent='targets not yet met';}
+}
+function markDone(){
+  modDone[activeMod.id]=true;
+  $('mb_status').className='status won';$('mb_status').textContent='\u2713 complete';
+  const c=$('mod_'+activeMod.id); if(c)c.classList.add('done');
+  const db=$('db_'+activeMod.id); if(db)db.classList.add('show');
+}
+function checkCases(){
+  if(!activeMod||!activeMod.check||!lastD||modDone[activeMod.id]) return;
+  if(activeMod.check(S,lastD)){
+    if(modHoldStart===null) modHoldStart=S.t;
+    modHold=S.t-modHoldStart;                      // simulated hours, not ticks
+    if(modHold>=(activeMod.hold||0)) markDone(); else updateModStatus();
+  } else { modHoldStart=null; modHold=0; updateModStatus(); }
+}
+
+/* ================= LOOP ================= */
+function tick(now){
+  const wall=Math.min((now-last)/1000,.1); last=now;
+  if(running&&MODE!=='view'){
+    if(S.t>=T_MAX){running=false;$('bPlay').textContent='Run';$('bPlay').className='btn go';}
+    else{
+      acc+=wall*speed; const dt=0.02;
+      while(acc>=dt&&S.t<T_MAX){lastD=step(S,C,dt);acc-=dt;} dirty=false;
+      if(acc>dt*4)acc=dt*4;
+      sinceRec+=wall*speed;
+      if(sinceRec>=.25){sinceRec=0;record();checkCases();
+        if($('tab-graphs').classList.contains('active'))drawBig();}
+    }
+  }
+  if(!lastD)lastD=step(S,C,1e-6);
+  try{ render(lastD); }catch(e){ console.error('render',e); }
+  requestAnimationFrame(tick);
+}
+
+/* ================= INIT ================= */
+function buildLevelBar(){
+  $('levelbar').innerHTML=[1,2,3,4,5,6].map(i=>
+    '<button class="lv" data-l="'+i+'" aria-pressed="'+(i===LEVEL)+'">Level '+i+'</button>').join('')+
+    '<span class="lname" id="lname"></span>';
+  $('levelbar').querySelectorAll('.lv').forEach(b=>b.addEventListener('click',()=>{
+    LEVEL=+b.dataset.l; const u=new URL(location); u.searchParams.set('level',LEVEL); history.replaceState({},'',u);
+    rebuild();
+  }));
+  $('lname').textContent=LEVELS[LEVEL].name;
+}
+function applyMode(){
+  const isView=MODE==='view', isDemo=MODE==='demo';
+  $('controlCard').style.display=(isView||isDemo)?'none':'';
+  $('clockCard').style.display=isView?'none':'';
+  $('ledgerCard').style.display=isView?'none':'';
+  $('strip').style.display=isView?'none':'';
+  document.querySelectorAll('nav.tabs button').forEach(b=>{
+    if(b.id!=='t1') b.style.display=(isView||isDemo)?'none':'';
+  });
+  $('subline').textContent = isView
+    ? 'Reservoirs hold chemical energy. Arrows are the rates at which it moves between them.'
+    : isDemo ? 'Press Run and watch how energy moves between the reservoirs.'
+    : 'Reservoirs hold chemical energy. Arrows are the rates at which it moves. Set the conditions, run the clock, and read the result.';
+  $('foot').textContent='Level '+LEVEL+' \u00b7 '+LEVELS[LEVEL].name+
+    ' \u00b7 EnergyFlow \u00b7 a teaching model of energy flow for a 70 kg adult. Individual pathways are compressed into single arrows.';
+}
+function rebuild(){
+  buildStage(); buildControls(); defaultGraphs(); buildStrip(); applyMode(); buildModules();
+  $('lname').textContent=LEVELS[LEVEL].name;
+  $('levelbar').querySelectorAll('.lv').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.l===LEVEL));
+  focusH=null; drawRegArrows();
+  if(!lastD)lastD=step(S,C,1e-6);
+  render(lastD); drawBig();
+}
+function moveControls(toGraphs){
+  const slot=$('gSlot'), home=$('rightcol'), ctl=$('controlCard'), clk=$('clockCard');
+  if(toGraphs){ slot.appendChild(clk); slot.appendChild(ctl); ctl.style.marginTop='13px'; }
+  else { home.insertBefore(ctl,home.firstChild); home.insertBefore(clk,ctl.nextSibling);
+         ctl.style.marginTop=''; clk.style.marginTop='13px'; }
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav.tabs button').forEach(x=>x.setAttribute('aria-selected','false'));
+  document.querySelectorAll('.tabpanel').forEach(x=>x.classList.remove('active'));
+  b.setAttribute('aria-selected','true');$(b.getAttribute('aria-controls')).classList.add('active');
+  const g=b.getAttribute('aria-controls')==='tab-graphs';
+  if(MODE==='explore') moveControls(g);
+  if(g)drawBig();
+}));
+$('bPlay').addEventListener('click',()=>{running=!running;
+  $('bPlay').textContent=running?'Pause':'Run';
+  $('bPlay').className=running?'btn primary':'btn go';});
+$('bReset').addEventListener('click',()=>{S=newState();hist=[];lastD=null;caseHold=0;
+  running=false;$('bPlay').textContent='Run';$('bPlay').className='btn go';
+  render(step(S,C,1e-6));drawBig();});
+$('cSpeed').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  speed=+b.dataset.s;[...$('cSpeed').children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));});
+$('cAdv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;advance(+b.dataset.h);});
+
+$('bSnap').addEventListener('click',()=>{
+  if(hist.length<2)return;
+  snaps.push({name:'run '+(snaps.length+1),data:hist.slice()});
+  renderSnaps();drawBig();});
+$('bClear').addEventListener('click',()=>{snaps=[];hist=[];renderSnaps();drawBig();drawStrip();});
+function renderSnaps(){
+  $('snaps').innerHTML=snaps.map((s,i)=>'<span class="sn">'+s.name+
+    ' <button data-i="'+i+'" aria-label="remove">\u00d7</button></span>').join('');
+  $('snaps').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    snaps.splice(+b.dataset.i,1);renderSnaps();drawBig();}));
+}
+window.addEventListener('resize',()=>{drawStrip();if($('tab-graphs').classList.contains('active'))drawBig();});
+
+function buildWelcome(){
+  $('wlevels').innerHTML=[1,2,3,4,5,6].map(i=>'<button data-wl="'+i+'" aria-pressed="'+(i===LEVEL)+'">Level '+i+
+    '<small>'+LEVELS[i].name+'</small></button>').join('');
+  $('wlevels').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    LEVEL=+b.dataset.wl;
+    $('wlevels').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.wl===LEVEL));
+  }));
+}
+document.querySelectorAll('[data-start]').forEach(b=>b.addEventListener('click',()=>{
+  const u=new URL(location);u.searchParams.set('level',LEVEL);history.replaceState({},'',u);
+  $('welcome').style.display='none'; rebuild();
+  if(b.dataset.start==='modules') $('t3').click(); else $('t1').click();
+  window.scrollTo({top:0});
+}));
+['about_open','about_open_w'].forEach(id=>{const e=$(id); if(e) e.addEventListener('click',()=>{$('about').style.display='flex';});});
+$('about_close').addEventListener('click',()=>{$('about').style.display='none';});
+$('about').addEventListener('click',e=>{if(e.target.id==='about')$('about').style.display='none';});
+$('brief_cancel').addEventListener('click',()=>{$('brief').style.display='none';});
+$('brief_go').addEventListener('click',()=>{$('brief').style.display='none'; if(pendingMod) startMod(pendingMod);});
+$('mb_close').addEventListener('click',closeMod);
+$('mb_restart').addEventListener('click',()=>{if(activeMod){const m=activeMod;modHold=0;modHoldStart=null;delete modDone[m.id];
+  const db=$('db_'+m.id);if(db)db.classList.remove('show');
+  const c=$('mod_'+m.id);if(c)c.classList.remove('done');startMod(m);}});
+buildLevelBar(); buildWelcome(); rebuild(); requestAnimationFrame(tick);
+if(MODE!=='explore'||P.get('level')||P.get('start')==='skip'){$('welcome').style.display='none';}
+</script>
+</body>
+</html>
