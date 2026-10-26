@@ -18,15 +18,15 @@
   --diet:#5C6B73;--diet-bg:#E7ECEF;
   --ins:#1F6FB2;--gcg:#B4442E;
   --alarm:#BE3428;--ok:#2F7C4F;--warn:#B8792A;--r:9px;
-  --svg-idle:#C9D6DD; --svg-default:#5E7683; --svg-label:#71858F; --svg-faint:#9AAAB4;
+  --svg-idle:#C9D6DD; --svg-default:#5E7683; --svg-label:#5E7079; --svg-faint:#9AAAB4;
   --svg-face:#ffffff; --svg-halo:#ffffff; --node-fallback:#F2F6F8; --track:#E9EEF1;
   --shadow-col:rgba(22,35,43,.55);
   --shadow:0 1px 2px rgba(22,35,43,.05),0 6px 18px -10px rgba(22,35,43,.18);
-}
+;--frame:#235A72;--frame-bg:#F2F6F8}
 :root[data-theme="dark"]{
   --paper:#0E151A; --panel:#17212A; --panel-2:#1E2A34;
   --line:#31434E; --line-soft:#26343C;
-  --ink:#F0F5F8; --ink-2:#CAD6DE; --muted:#A0B2BD;
+  --ink:#F0F5F8;--frame:#9BC6DC;--frame-bg:#1B2630; --ink-2:#CAD6DE; --muted:#A0B2BD;
   --glu:#E0A661;--glu-bg:#3A2C18; --gly:#6BAEDD;--gly-bg:#152936;
   --fat:#B49AE0;--fat-bg:#241A38; --fa:#63C0A8;--fa-bg:#12302A;
   --conv:#8FC96A;--conv-bg:#1D2E15; --atp:#DE8272;--atp-bg:#371915;
@@ -90,9 +90,9 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .tabpanel.active{display:block;opacity:1}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 
-.card-h{padding:8px 15px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap}
-.card-h h3{font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase}
-.card-h .hint{font-size:11px;color:var(--muted)}
+.card-h{padding:8px 15px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap;background:var(--frame-bg);border-radius:var(--r) var(--r) 0 0}
+.card-h h3{font-size:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
+.card-h .hint{font-size:12px;color:var(--muted)}
 .card-b{padding:14px}
 /* level bar */
 .levelbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
@@ -104,7 +104,7 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .cr-grid{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:14px;align-items:start}
 .stagecol{min-width:0}
 .stagecol>.card:first-child>.card-h{flex-wrap:wrap;gap:4px 14px;padding-top:10px;padding-bottom:10px}
-.stagecol>.card:first-child>.card-h .hint{font-size:11.5px}
+.stagecol>.card:first-child>.card-h .hint{font-size:12px}
 .underdiagram{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
 @media(max-width:900px){.underdiagram{grid-template-columns:minmax(0,1fr)}}
 .underdiagram #controlCard .card-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px 18px}
@@ -160,9 +160,8 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .ro .u{font-size:10px;color:var(--muted);font-weight:400;margin-left:2px}
 .ro .nr{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-2);margin-top:2px}
 .rohead{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:8px 15px 0;border-top:1px solid var(--line-soft)}
-.rolabel{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--muted)}
+  padding:8px 15px;border-top:1px solid var(--line-soft);background:var(--frame-bg)}
+.rolabel{font-family:"Space Grotesk",system-ui,sans-serif;font-size:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
 .swx{display:flex;align-items:center;gap:7px;border:0;background:none;cursor:pointer;padding:2px 0;font-family:inherit}
 .swx-track{width:30px;height:17px;border-radius:999px;background:var(--track);
   box-shadow:inset 0 0 0 1px var(--line);position:relative;transition:background .18s}
@@ -970,7 +969,7 @@ function buildStage(){
     gF.appendChild(p);
     if(f.lab){const t=document.createElementNS(NS,'text');
       t.setAttribute('x',f.lx);t.setAttribute('y',f.ly);t.setAttribute('text-anchor',f.a||'middle');
-      t.setAttribute('font-size','12.5');t.setAttribute('fill',cssv('--svg-label'));
+      t.setAttribute('font-size','13');t.setAttribute('fill',cssv('--svg-label'));
       t.setAttribute('font-family','IBM Plex Mono, monospace');
       t.setAttribute('stroke',cssv('--svg-halo'));t.setAttribute('stroke-width','3.2');
       t.setAttribute('paint-order','stroke');t.setAttribute('stroke-linejoin','round');
@@ -1026,15 +1025,15 @@ function buildStage(){
       t.setAttribute('font-size',sz);t.setAttribute('fill',fl);if(w2)t.setAttribute('font-weight',w2);
       t.setAttribute('font-family',fam||'Space Grotesk, sans-serif');g.appendChild(t);return t;};
     T(n.conv?30:Math.round(n.h*0.36), n.big?18:15.5,'600',col).textContent=n.t;
-    T(n.conv?52:Math.round(n.h*0.60), n.conv?12.5:12.5,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
+    T(n.conv?52:Math.round(n.h*0.60), 13,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
     T(n.conv?78:Math.round(n.h*0.85), n.conv?14.5:(n.big?15.5:13),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
     g.setAttribute('id','nd_'+n.id);
     if(n.tag){
       const tg=document.createElementNS(NS,'text');
       tg.setAttribute('x',n.x+7); tg.setAttribute('y',n.y+n.h-5);
-      tg.setAttribute('font-size','8'); tg.setAttribute('letter-spacing','.08em');
+      tg.setAttribute('font-size','9'); tg.setAttribute('letter-spacing','.08em');
       tg.setAttribute('font-family','IBM Plex Mono, monospace');
-      tg.setAttribute('fill',cssv(COL[n.c])); tg.setAttribute('opacity','.7');
+      tg.setAttribute('fill',cssv(COL[n.c])); tg.setAttribute('opacity','.85');
       tg.textContent='\u2298 NOT SHARED'; g.appendChild(tg);
     }
     if(NODEHELP[n.id]){
@@ -1059,7 +1058,7 @@ function buildStage(){
       const fr=document.createElementNS(NS,'rect');fr.setAttribute('id','capbar');
       fr.setAttribute('x',bx+1);fr.setAttribute('y',by+1);fr.setAttribute('width',0);
       fr.setAttribute('height',4);fr.setAttribute('rx',2);fr.setAttribute('fill',col);g.appendChild(fr);
-      T(92,9,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
+      T(92,10.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
     }
     gN.appendChild(g);
   });
@@ -1075,12 +1074,12 @@ function buildStage(){
         st.setAttribute('opacity','.55');g.appendChild(st);
       }
       const c=document.createElementNS(NS,'circle');
-      c.setAttribute('cx',r.x);c.setAttribute('cy',r.y);c.setAttribute('r',8.5);
+      c.setAttribute('cx',r.x);c.setAttribute('cy',r.y);c.setAttribute('r',11);
       c.setAttribute('fill',cssv('--svg-face'));c.setAttribute('stroke',cssv('--'+r.h));c.setAttribute('stroke-width','1.6');
       g.appendChild(c);
       const t=document.createElementNS(NS,'text');
       t.setAttribute('x',r.x);t.setAttribute('y',r.y+3.6);t.setAttribute('text-anchor','middle');
-      t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.setAttribute('fill',cssv('--'+r.h));
+      t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('fill',cssv('--'+r.h));
       t.setAttribute('font-family','IBM Plex Mono, monospace');t.textContent=r.s;g.appendChild(t);
       gB.appendChild(g);
     });
@@ -1121,7 +1120,7 @@ function buildHormoneBox(){
     gH.appendChild(g);
   });
   const hint=document.createElementNS(NS,'text');
-  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+13);hint.setAttribute('font-size','8');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
+  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+13);hint.setAttribute('font-size','9');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
   hint.setAttribute('fill',cssv('--ink-2'));hint.setAttribute('font-family','IBM Plex Mono, monospace');
   hint.textContent='\u25b8 SENSED ABOVE \u2192 ACTS ON THE + AND \u2212 FLOWS';gH.appendChild(hint);
   // an explicit sensing arrow, so the diagram reads as a closed loop rather than
@@ -1180,7 +1179,7 @@ function drawRegArrows(){
   const bg=$('badges');
   if(bg) REGS.filter(x=>flowVisible(x.flow)&&(!x.lv||LEVEL>=x.lv)).forEach((r,i)=>{
     const c=$('bdg'+i); if(!c) return;
-    if(!focusH){ c.setAttribute('opacity', c.dataset.live||1); c.querySelector('circle').setAttribute('r',(c.dataset.r||8.5)); }
+    if(!focusH){ c.setAttribute('opacity', c.dataset.live||1); c.querySelector('circle').setAttribute('r',(c.dataset.r||11)); }
     else if(r.h===focusH){ c.setAttribute('opacity',1); c.querySelector('circle').setAttribute('r',11); }
     else { c.setAttribute('opacity',0.1); }
   });
@@ -1290,7 +1289,7 @@ function render(d){
       const g=$('bdg'+i); if(!g) return;
       const a=clamp01(drive[r.k]||0);
       g.dataset.live=(0.28+0.72*a).toFixed(2);
-      g.dataset.r=(reduceMotion?8.5:(7+2.4*a)).toFixed(1);
+      g.dataset.r=(reduceMotion?11:(9.5+2.6*a)).toFixed(1);
       if(!focusH){ g.setAttribute('opacity',g.dataset.live); g.querySelector('circle').setAttribute('r',g.dataset.r); }
     });
     const hi=$('hval_ins'), hg=$('hval_gcg');

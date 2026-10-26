@@ -35,9 +35,9 @@ The previous published version is kept as `index.previous.html`.
 
 ## Starting
 
-A welcome screen offers a level and two ways in: the guided modules for that level, or the
-model with no set task. Both are also reachable directly by URL, which skips the welcome
-screen and is useful for linking from a Canvas question.
+The main menu offers Orientation, which needs no level, and below it a level with two ways
+in: the guided modules for that level, or the model with no set task. Both are also reachable
+directly by URL, which skips the menu and is useful for linking from a Canvas question.
 
 To publish, enable GitHub Pages on the repository and point it at the branch root.
 
@@ -52,10 +52,10 @@ do not render them, so nothing can be revealed ahead of the question that teache
 
 | Level | Adds | Controls |
 |---|---|---|
-| 1 · Fuel and demand | glucose pool → liver and systemic convergence → energy use | food intake, workload |
+| 1 · Fuel and demand | glucose pool → liver and systemic convergence → energy use | food intake, workload, meal pattern |
 | 2 · The reserves | liver and muscle glycogen, adipose, cell protein, fatty acids | — |
 | 3 · The regulators | insulin and glucagon, with regulator badges | beta-cell capacity |
-| 4 · Perturbation | — | glucose infusion, insulin sensitivity, GLP-1 agonist, meal pattern |
+| 4 · Perturbation | — | glucose infusion, insulin sensitivity, GLP-1 agonist |
 | 5 · Overflow | ketone bodies (from liver convergence), arterial pH | — |
 | 6 · Failure and rescue | insulin ⊣ glucagon | insulin infusion, glucagon receptor blocker |
 | Open investigation | everything | + acute illness (stress hormones) |
@@ -135,11 +135,11 @@ condition, rather than transcribed from an earlier draft.
 | Condition | Result |
 |---|---|
 | 12 h fast | plasma glucose falls about 20%, 102 → 80 mg/dL |
-| 24 h fast | glucose plateaus near 80 mg/dL; liver glycogen effectively empty |
+| 24 h fast | glucose settles near 75 mg/dL; liver glycogen effectively empty |
 | 5-day starvation | glucose ~75 mg/dL, ketoacids ~18 mg/dL, pH ~7.38 |
-| Intense exercise (8× rest), fasted | glucose falls to ~61 as muscle glycogen drains, recovers to ~74 while liver glycogen lasts, then falls again once it is gone; exhaustion at about 19 h |
+| Intense exercise (8× rest), fasted | glucose falls to ~60 as muscle glycogen drains, recovers to ~74 while liver glycogen lasts, then falls again once it is gone; exhaustion at about 19 h |
 | Moderate exercise (4× rest), fasted | sustained on gluconeogenesis at ~73 mg/dL; reserves exhausted at day 19 |
-| IV glucose tolerance test, 1,000 mg/min for 1 h | peak ~257 mg/dL, below 140 in about 25 min |
+| IV glucose tolerance test, 60 g over 1 h after a 24 h fast | peak ~245 mg/dL, below 140 about 25 min after it ends |
 | Insulin production set to zero, 36 h | glucose ~450 mg/dL, ketoacids ~74 mg/dL, pH ~7.26 |
 | Insulin infusion into that subject | glucose ~94 mg/dL, ketoacids 0, pH 7.40: every variable returns toward normal together |
 | Insulin without food | glucose ~48 mg/dL, no ketones, normal pH |
@@ -172,7 +172,7 @@ muscle glycogen is gone and the blood glucose supplying the working muscle is fa
 work cannot continue. A fasted subject at an intense workload reaches that point at about
 19 hours, so the model will not let a subject work at 8× resting demand for nine days.
 
-Every combination of the eight controls at their extremes has been swept for physiological
+Every combination of the ten controls at their extremes has been swept for physiological
 nonsense; all of them either run cleanly or halt with a named reason.
 
 ### Structure
