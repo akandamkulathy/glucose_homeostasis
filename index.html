@@ -390,7 +390,7 @@ button.mustread{border-color:#C2410C!important}
     <h1 style="font-size:30px;margin:4px 0 10px">EnergyFlow</h1>
     <p style="margin:0 0 18px;color:var(--ink-2);font-size:14px;max-width:56ch">A model of how the body moves chemical energy between the blood, its reserves, and the cells that spend it. Reservoirs hold energy; arrows are the rates at which it moves.</p>
     <div class="wsec">
-      <button class="wbtn worient" data-start="orient"><b>New to EnergyFlow? Start with Orientation</b><span>A tour of the complete screen, then four short hands-on tasks that build it up level by level. No level needed.</span></button>
+      <button class="wbtn worient" data-start="orient"><b>New to EnergyFlow? Start with Orientation</b><span>A tour of the complete screen, then five short hands-on tasks that build it up level by level. No level needed.</span></button>
     </div>
     <div class="wsec">
       <div class="wlab">Or choose a level</div>
@@ -436,7 +436,7 @@ button.mustread{border-color:#C2410C!important}
   <div class="wcard" style="max-width:600px">
     <span class="eyebrow">Getting started</span>
     <h2 style="font-size:21px;margin:4px 0 6px">Orientation</h2>
-    <p style="margin:0 0 16px;color:var(--ink-2);font-size:13.5px">Two ways in. The tour names each part of the screen; the four tasks have you use it. Each task opens at the level it belongs to, whatever level you are on now.</p>
+    <p style="margin:0 0 16px;color:var(--ink-2);font-size:13.5px">Two ways in. The tour names each part of the screen; the five tasks have you use it. Each task opens at the level it belongs to, whatever level you are on now.</p>
     <div class="wbtns" style="margin-bottom:14px">
       <button class="wbtn" id="om_tour" style="grid-column:1/-1"><b>Tour the screen</b><span>About a minute, no clicking required</span></button>
     </div>
@@ -446,7 +446,7 @@ button.mustread{border-color:#C2410C!important}
         <button class="btn" id="om_close">Close</button>
         <button class="btn" id="om_menu">Main menu</button>
       </span>
-      <button class="btn" id="om_resetall" title="Mark all four tasks as not done">Reset all tasks</button>
+      <button class="btn" id="om_resetall" title="Mark all five tasks as not done">Reset all tasks</button>
     </div>
   </div>
 </div>
@@ -587,8 +587,8 @@ button.mustread{border-color:#C2410C!important}
           <div class="runbar" style="margin-bottom:9px">
             <button class="btn go" id="bPlay" style="min-width:74px">Run</button>
             <div class="seg" id="cSpeed" style="flex:1" role="group" aria-label="Speed">
-              <button data-s="1" aria-pressed="true">1×</button>
-              <button data-s="6" aria-pressed="false">6×</button>
+              <button data-s="1" aria-pressed="false">1×</button>
+              <button data-s="6" aria-pressed="true">6×</button>
               <button data-s="24" aria-pressed="false">24×</button>
             </div>
             <button class="btn" id="bUndo" disabled title="Step back to before your last advance">Undo</button>
@@ -897,7 +897,9 @@ const URLSCEN=P.get('scenario'); const URLREAD=P.get('readout'); const URLTHEME=
 let ALT=false;                       // alternate units
 let S=newState();
 let C={diet:2250,activity:1,betaFn:1,insulinInf:0,gcgBlock:false,glucoseInf:0,glp1:0,insSens:1,meals:false,epi:0};
-let running=false, speed=1, last=performance.now(), acc=0, sinceRec=0;
+const SPEED_DEFAULT=6;
+let running=false, speed=SPEED_DEFAULT, last=performance.now(), acc=0, sinceRec=0;
+let advT=null, advFrom=0, advDur=0, advStart=0, advSteps=0;
 let hist=[], lastD=null, snaps=[], focusH=null, dirty=false;
 let undoStack=[];
 const LOG=[];
@@ -1220,7 +1222,7 @@ function setFlow(id,rate,scale,col){
   p.setAttribute('stroke', on?(col||cssv('--svg-default')):cssv('--svg-idle'));
   p.setAttribute('opacity', on?1:.45);
   if(on && !reduceMotion){
-    if(running) phase[id]=(phase[id]||0)-(0.8+f*5.5);
+    if(running||advT!==null) phase[id]=(phase[id]||0)-(0.8+f*5.5);
     p.setAttribute('stroke-dasharray','10 7');
     p.setAttribute('stroke-dashoffset',(phase[id]||0).toFixed(1));
   } else {p.removeAttribute('stroke-dasharray');p.removeAttribute('stroke-dashoffset');}
@@ -1301,7 +1303,7 @@ function render(d){
   if(fh) fh.textContent = 'thicker arrow = faster flow';
   renderReadouts(d); renderAlerts(d); renderLedgers(d); renderRes(d); drawStrip();
   if(activeMod) updateModStatus();
-  $('clockHint').textContent = running? 'running \u00b7 '+speed+' h per second'
+  $('clockHint').textContent = (advT!==null)? 'advancing\u2026' : running? 'running \u00b7 '+speed+' h per second'
       : (dirty? 'paused: press Run or Advance to see the effect' : 'paused');
   $('clockHint').style.color = (!running&&dirty)? cssv('--warn') : '';
 }
@@ -1785,6 +1787,17 @@ function applyScen(sc){
   render(lastD);drawBig();
 }
 function advance(hours,silent){ if(!silent){ act('advance'); snapshot(); logit('advance '+(hours<1?Math.round(hours*60)+' min':hours+' h')+', to '+((S.t+hours)<48?(S.t+hours).toFixed(1)+' h':((S.t+hours)/24).toFixed(1)+' d')); } dirty=false;
+  // an Advance is a short run, not a jump: hand it to tick() so the diagram and the
+  // recorded graphs move while the clock travels. silent calls stay synchronous.
+  if(!silent && !reduceMotion){
+    if(advT!==null) finishAdvance();
+    bringDiagramIntoView();
+    advFrom=S.t; advT=Math.min(S.t+hours,T_MAX);
+    advDur=Math.max(0.4,Math.min(30,hours/speed));   // same pace as Run, just with a stop
+    advStart=performance.now(); advSteps=0; running=false;
+    $('bPlay').textContent='Run'; $('bPlay').className='btn go';
+    return;
+  }
   const dt=0.02;
   for(let i=0;i<hours/dt&&S.t<T_MAX;i++){lastD=step(S,C,dt); if(i%3===0){record();checkCases();} if(lastD.exhausted){running=false;$('bPlay').textContent='Run';$('bPlay').className='btn go';break;}}
   record();
@@ -1799,7 +1812,7 @@ const MODULES=[
   setup:{reset:1,C:{diet:2250,activity:1}},
   steps:[
    {t:'Find plasma [glucose] at the top of the Measurements column, beside the diagram. Click it once you have read the value.', read:()=>RD.glucose()},
-   {t:'In the Clock, beneath the diagram, press Advance by 12 h.', done:()=>ACTS.has('advance')&&S.t>=11.9, at:()=>RD.adv12()},
+   {t:'In the Clock, beneath the diagram, press Advance by 12 h.', done:()=>(ACTS.has('advance')||running||S.t>0)&&S.t>=11.9, at:()=>RD.adv12()},
    {t:'Read plasma [glucose] again, and click it once you have.', read:()=>RD.glucose()}],
   debrief:'That is the cycle every experiment uses: read, advance, read again. The Measurements column is where a result is read; the diagram shows how it came about.'},
 
@@ -1809,7 +1822,7 @@ const MODULES=[
   setup:{reset:1,C:{diet:2250,activity:1}},
   steps:[
    {t:'In the Controls, set Food intake to 0.', done:()=>C.diet===0, at:()=>RD.ctl('cDiet')},
-   {t:'Press Advance by 12 h.', done:()=>ACTS.has('advance')&&S.t>=11.9, at:()=>RD.adv12()},
+   {t:'Press Advance by 12 h.', done:()=>(ACTS.has('advance')||running||S.t>0)&&S.t>=11.9, at:()=>RD.adv12()},
    {t:'Read plasma [glucose], and click it once you have.', read:()=>RD.glucose()},
    {t:'Press Defaults, at the top of the Controls. Food intake returns to 2,250.', done:()=>ACTS.has('defaults'), at:()=>RD.btn('bDefaults')},
    {t:'Read Elapsed, at the bottom of the Measurements column, and click it. Did Defaults change it?', read:()=>RD.elapsed()},
@@ -1835,7 +1848,7 @@ const MODULES=[
   setup:{reset:1,C:{diet:2250,activity:1}},
   steps:[
    {t:'In the Controls, set Food intake to 0.', done:()=>C.diet===0, at:()=>RD.ctl('cDiet')},
-   {t:'Press Advance by 24 h.', done:()=>ACTS.has('advance')&&S.t>=23.9, at:()=>RD.adv24()},
+   {t:'Press Advance by 24 h.', done:()=>(ACTS.has('advance')||running||S.t>0)&&S.t>=23.9, at:()=>RD.adv24()},
    {t:'Open the Graphs tab, at the top of the page. These steps stay with you, and the Control room tab brings you back whenever you want.',
     done:()=>{const g=$('tab-graphs'); return !!g && g.offsetParent!==null;}, at:()=>RD.tabGraphs()},
    {t:'The small graphs are here too. On the second one, set the first menu (the vertical axis) to Plasma [glucose] and the second menu (the horizontal axis) to Liver glycogen.',
@@ -1916,7 +1929,7 @@ const MODULES=[
 
  {id:'hypo',lv:6,kind:'patient',t:'Patient B \u00b7 20 years',
   chart:{mrn:'Case 2 \u00b7 type 1 diabetes \u00b7 fictional',
-   vit:[['Plasma glucose','48 mg/dL','70\u2013100',1],['Arterial pH','7.39','7.35\u20137.45',0],
+   vit:[['Plasma glucose','47 mg/dL','70\u2013100',1],['Arterial pH','7.39','7.35\u20137.45',0],
         ['Urine ketones','negative','negative',0]]},
   brief:'Took a usual morning insulin dose. Shaky, sweating, and confused on arrival. The team is considering sepsis, adrenal insufficiency, and an insulin overdose.',
   det:'Return plasma glucose to the normal range and hold it there for 4 simulated hours.',
@@ -2131,7 +2144,7 @@ function showDone(){
   const fromOrient = modSource==='orientation';
   $('dn_list').querySelector('b').textContent = fromOrient? 'Back to the orientation list' : 'Back to the module list';
   $('dn_list').querySelector('span').textContent = fromOrient
-    ? 'The four short tasks, with this one marked done'
+    ? 'The five short tasks, with this one marked done'
     : 'Choose another investigation for this level';
   fadeIn('doneask',1100);
 }
@@ -2146,8 +2159,37 @@ function checkCases(){
 }
 
 /* ================= LOOP ================= */
+// An advance is worth watching, so make sure the thing that moves is on screen.
+// One nudge is enough: the clock stays in reach, so later advances need no scroll.
+function bringDiagramIntoView(){
+  if($('tab-graphs').classList.contains('active')) return;   // the plot is the view here
+  const st=$('stage'); if(!st) return;
+  const svg=st.closest('.card')||st;
+  const s=svg.getBoundingClientRect();
+  if(s.top>=-2 && s.bottom<=innerHeight+2) return;        // already fully visible
+  const shift=s.top-12, adv=$('cAdv');
+  if(adv && adv.getBoundingClientRect().bottom-shift>innerHeight) return;  // both will not fit
+  window.scrollTo({top:Math.max(0,window.scrollY+shift), behavior: reduceMotion?'auto':'smooth'});
+}
+function finishAdvance(){
+  const dt=0.02;
+  while(S.t<advT-1e-9&&S.t<T_MAX){ lastD=step(S,C,Math.min(dt,advT-S.t));
+    if(++advSteps%3===0){record();checkCases();}
+    if(lastD.exhausted) break; }
+  record(); advT=null; checkCases(); drawBig();
+}
 function tick(now){
   const wall=Math.min((now-last)/1000,.1); last=now;
+  if(advT!==null&&MODE!=='view'){
+    const frac=Math.min(1,(now-advStart)/(advDur*1000));
+    const target=advFrom+(advT-advFrom)*frac, dt=0.02;
+    let halt=false;
+    while(S.t<target-1e-9&&S.t<T_MAX){ lastD=step(S,C,Math.min(dt,target-S.t));
+      if(++advSteps%3===0){record();checkCases();}
+      if(lastD.exhausted){halt=true;break;} }
+    if($('tab-graphs').classList.contains('active'))drawBig();
+    if(frac>=1||halt||S.t>=T_MAX){ record(); advT=null; checkCases(); drawBig(); }
+  }
   if(running&&MODE!=='view'){
     if(S.t>=T_MAX||(lastD&&lastD.exhausted)){running=false;$('bPlay').textContent='Run';$('bPlay').className='btn go';}
     else{
@@ -2235,7 +2277,7 @@ document.querySelectorAll('nav.tabs button[role="tab"]').forEach(b=>b.addEventLi
   if(MODE==='explore') moveControls(g);
   if(g)drawBig();
 }));
-$('bPlay').addEventListener('click',()=>{running=!running;
+$('bPlay').addEventListener('click',()=>{if(advT!==null)finishAdvance();running=!running;
   $('bPlay').textContent=running?'Pause':'Run';
   $('bPlay').className=running?'btn primary':'btn go';});
 $('bUndo').addEventListener('click',()=>{act('undo');undo();logit('stepped back one action');});
@@ -2248,11 +2290,14 @@ $('bDefaults').addEventListener('click',()=>{
 $('cMeal').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return;
   snapshot(); const kcal=+b.dataset.m; logit('gave a '+kcal+' kcal meal');
   S.mealC += kcal*0.50/4; S.mealF += kcal*0.35/9; dirty=true; syncUI();});
-$('bReset').addEventListener('click',()=>{ act('reset'); Object.keys(BARMAX).forEach(k=>delete BARMAX[k]); snapshot(); logit('reset the subject');S=newState();hist=[];lastD=null;modHold=0;modHoldStart=null;
+$('bReset').addEventListener('click',()=>{ advT=null; setSpeed(SPEED_DEFAULT); act('reset'); Object.keys(BARMAX).forEach(k=>delete BARMAX[k]); snapshot(); logit('reset the subject');S=newState();hist=[];lastD=null;modHold=0;modHoldStart=null;
   running=false;$('bPlay').textContent='Run';$('bPlay').className='btn go';
   lastD=step(S,C,1e-6); render(lastD); drawStrip(); drawBig();});
 $('cSpeed').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  speed=+b.dataset.s;[...$('cSpeed').children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));});
+  setSpeed(+b.dataset.s);});
+function setSpeed(v){ speed=v;
+  [...$('cSpeed').children].forEach(x=>x.setAttribute('aria-pressed',
+    +x.dataset.s===v?'true':'false')); }
 $('cAdv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;advance(+b.dataset.h);});
 
 $('bSnap').addEventListener('click',()=>{
@@ -2401,7 +2446,7 @@ function tourStart(full){
   tourSteps=TOUR.filter(s=>s.lv<=LEVEL).map(x=>Object.assign({},x));
   tourSteps.sort((p,q)=>(p.last?1:0)-(q.last?1:0));   // the closing step always closes
   tourI=0;
-  if(full && tourSteps[0]) tourSteps[0].b='This is the complete model, with everything the laboratory uses switched on. Each level shows only part of it, and the four tasks afterwards build it up one level at a time. '+tourSteps[0].b;
+  if(full && tourSteps[0]) tourSteps[0].b='This is the complete model, with everything the laboratory uses switched on. Each level shows only part of it, and the five tasks afterwards build it up one level at a time. '+tourSteps[0].b;
   $('tour').style.display='block'; tourShow(true);
 }
 function tourStop(){ $('tour').style.display='none';

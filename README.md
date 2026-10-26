@@ -222,13 +222,35 @@ driving a fasting subject low, and does little in a subject with no beta cells a
 - On a narrow screen the diagram keeps its size and scrolls sideways rather than shrinking to
   the point of illegibility.
 
+## The clock
+
+**Run** and **Advance by** are the same motion; the only difference is whether there is a
+stopping point. Run keeps going until it is stopped, while Advance by travels to the mark and
+halts there exactly, which is how a measured experiment is run. An advance is therefore a short
+run rather than a jump: the reservoirs drain, the arrows pulse and the recorded graphs draw
+themselves while the clock is moving, so the order in which a curve is laid down is visible
+rather than inferred from a finished plot.
+
+The speed selector governs both controls. At 1x one simulated hour passes per real second, so a
+24 h advance takes 24 seconds; at the 6x default it takes about four, and at 24x about one. The
+duration is floored at 0.4 s so that a 10 min advance is still visible, and capped at 30 s so
+that no single press becomes a wait.
+
+**Reset** returns the clock to its starting state, and that includes the speed, which goes back
+to 6x. **Defaults** restores the controls and leaves the clock alone.
+
+Pressing Advance brings the diagram into view if it is not already there, once, leaving the
+Clock in reach so that later presses do not move the page. On the Graphs tab nothing scrolls,
+because the plot is the whole view.
+
 ## Reduced motion
 
 The app honours the operating system's reduced-motion setting. Beyond the usual CSS
 transitions, this also stops the travelling dashes on the arrows and the pulsing of the
 hormone badges, both of which are driven from JavaScript and are not covered by a media
 query. With motion reduced, arrow thickness alone carries the rate, and the legend says so.
-The guided orientation moves between steps without animating.
+The guided orientation moves between steps without animating, Advance by jumps to the mark
+instead of travelling to it, and the page is brought to the diagram without a smooth scroll.
 
 ## Help and record-keeping
 
