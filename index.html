@@ -10,15 +10,15 @@
 <style>
 :root{
   --paper:#EDF2F4;--panel:#fff;--panel-2:#F7FAFB;--line:#D2DDE3;--line-soft:#E4EBEF;
-  --ink:#16232B;--ink-2:#42555F;--muted:#71858F;
-  --glu:#B0722C;--glu-bg:#F7E7D1; --gly:#2A6C99;--gly-bg:#D9E9F5;
+  --ink:#16232B;--ink-2:#42555F;--muted:#5E6E77;
+  --glu:#A06828;--glu-bg:#F7E7D1; --gly:#2A6C99;--gly-bg:#D9E9F5;
   --fat:#6B3FA0;--fat-bg:#E7DFF3; --fa:#2F7C6B;--fa-bg:#D7ECE5;
   --conv:#4A7E2C;--conv-bg:#E1EFD5;--atp:#94372B;--atp-bg:#F6E1DC;
   --ket:#564596;--ket-bg:#E2DEF3; --pro:#7A5B8F;--pro-bg:#EBE2F2;
   --diet:#5C6B73;--diet-bg:#E7ECEF;
   --ins:#1F6FB2;--gcg:#B4442E;
-  --alarm:#BE3428;--ok:#2F7C4F;--warn:#B8792A;--r:9px;
-  --svg-idle:#C9D6DD; --svg-default:#5E7683; --svg-label:#5E7079; --svg-faint:#9AAAB4;
+  --alarm:#BE3428;--ok:#2F7C4F;--warn:#976322;--r:9px;
+  --svg-idle:#C9D6DD; --svg-default:#5E7683; --svg-label:#596A73; --svg-faint:#9AAAB4;
   --svg-face:#ffffff; --svg-halo:#ffffff; --node-fallback:#F2F6F8; --track:#E9EEF1;
   --shadow-col:rgba(22,35,43,.55);
   --shadow:0 1px 2px rgba(22,35,43,.05),0 6px 18px -10px rgba(22,35,43,.18);
@@ -73,17 +73,17 @@
 :root[data-theme="dark"] .btn:hover,:root[data-theme="dark"] .scen button:hover,
 :root[data-theme="dark"] .wbtn:hover:not(:disabled),:root[data-theme="dark"] .wlevels button:hover{background:#22313A}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
 .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
-.wrap{max-width:1340px;margin:0 auto;padding:20px 20px 60px}
+.wrap{max-width:1500px;margin:0 auto;padding:20px 20px 60px}
 header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:9px}
-.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
-header.top h1{font-size:21px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+header.top h1{font-size:22px;font-weight:600}
 #subline{display:none}
-header.top p.sub{margin:6px 0 0;color:var(--ink-2);font-size:13px;max-width:60ch}
+header.top p.sub{margin:6px 0 0;color:var(--ink-2);font-size:14px;max-width:60ch}
 nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
-nav.tabs button{font-family:"Space Grotesk",sans-serif;font-size:12.5px;font-weight:500;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer;transition:.16s}
+nav.tabs button{font-family:"Space Grotesk",sans-serif;font-size:14px;font-weight:500;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer;transition:.16s}
 nav.tabs button[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2px solid var(--glu);outline-offset:2px}
 .tabpanel{display:none;opacity:0;transition:opacity .2s ease}
@@ -91,24 +91,26 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 
 .card-h{padding:8px 15px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap;background:var(--frame-bg);border-radius:var(--r) var(--r) 0 0}
-.card-h h3{font-size:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
-.card-h .hint{font-size:12px;color:var(--muted)}
+.card-h h3{font-size:15.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
+.card-h .hint{font-size:13.5px;color:var(--muted)}
 .card-b{padding:14px}
 /* level bar */
 .levelbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
-.levelbar .lv{font-family:"Space Grotesk",sans-serif;font-size:11.5px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink-2)}
+.levelbar .lv{font-family:"Space Grotesk",sans-serif;font-size:13px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink-2)}
 .levelbar .lv[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .levelbar .lv[disabled]{opacity:.4;cursor:not-allowed}
 .levelbar .lvopen{border-style:dashed}
-.levelbar .lname{font-size:12px;color:var(--muted);margin-left:6px}
+.levelbar .lname{font-size:13.5px;color:var(--muted);margin-left:6px}
+.levelbar .lvn{opacity:.72;margin-left:6px;font-weight:400}
+.levelbar .lvn::before{content:"\00b7";margin-right:6px}
 .cr-grid{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:14px;align-items:start}
 .stagecol{min-width:0}
 .stagecol>.card:first-child>.card-h{flex-wrap:wrap;gap:4px 14px;padding-top:10px;padding-bottom:10px}
-.stagecol>.card:first-child>.card-h .hint{font-size:12px}
+.stagecol>.card:first-child>.card-h .hint{font-size:13.5px}
 .underdiagram{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
 @media(max-width:900px){.underdiagram{grid-template-columns:minmax(0,1fr)}}
 .underdiagram #controlCard .card-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px 18px}
-#clockCard .card-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:4px 18px;align-items:start;padding-top:10px;padding-bottom:10px}
+#clockCard .card-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:4px 18px;align-items:start;padding-top:10px;padding-bottom:10px}
 #clockCard .card-h{padding-top:9px;padding-bottom:9px}
 #clockCard .card-b>.runbar{grid-column:1/-1}
 #clockCard .card-b>.desc{margin-top:2px}
@@ -135,33 +137,33 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .stage svg{width:100%;height:auto;display:block}
 @media(max-width:900px){
 .stage svg{width:860px;max-width:none}
-.stage::after{content:"swipe the diagram sideways to see all of it";display:block;font-size:10.5px;color:var(--muted);padding:5px 2px 0}
+.stage::after{content:"swipe the diagram sideways to see all of it";display:block;font-size:13px;color:var(--muted);padding:5px 2px 0}
 }
 @media(max-width:820px){
 .stage{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .stage svg{min-width:760px}
-.stage::after{content:"swipe the diagram sideways to see all of it";display:block;font-size:10.5px;
+.stage::after{content:"swipe the diagram sideways to see all of it";display:block;font-size:13px;
     color:var(--muted);font-family:"IBM Plex Mono",monospace;padding:4px 2px 2px}
 .readouts{grid-template-columns:repeat(2,1fr)}
 .strip{grid-template-columns:1fr}
-  nav.tabs button,#btnMenu{font-size:11.5px;padding:7px 11px}
-  header.top h1{font-size:21.5px}
+  nav.tabs button,#btnMenu{font-size:13px;padding:7px 11px}
+  header.top h1{font-size:22.5px}
 }
 .alerts{display:flex;flex-wrap:wrap;gap:6px;padding:9px 15px;border-top:1px solid var(--line-soft);min-height:40px;align-items:center}
-.pill{font-family:"IBM Plex Mono",monospace;font-size:10.5px;padding:4px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
+.pill{font-family:"IBM Plex Mono",monospace;font-size:13px;padding:4px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
 .pill.info{color:var(--ink-2);border-color:var(--line);background:var(--panel-2)}
 .pill.warn{color:var(--warn);border-color:#E8CFA6;background:#FDF6EA}
 .pill.bad{color:var(--alarm);border-color:#EFC0BA;background:#FDEEEC}
 .pill.good{color:var(--ok);border-color:#B8D8C4;background:#EEF7F1}
 .readouts{border-top:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line-soft);border-top:1px solid var(--line-soft)}
 .ro{background:var(--panel);padding:9px 11px}
-.ro .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.ro .v{font-family:"IBM Plex Mono",monospace;font-size:17.5px;font-weight:600;margin-top:2px;letter-spacing:-.02em}
-.ro .u{font-size:10px;color:var(--muted);font-weight:400;margin-left:2px}
-.ro .nr{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-2);margin-top:2px}
+.ro .k{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ro .v{font-family:"IBM Plex Mono",monospace;font-size:18.5px;font-weight:600;margin-top:2px;letter-spacing:-.02em}
+.ro .u{font-size:12px;color:var(--muted);font-weight:400;margin-left:2px}
+.ro .nr{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);margin-top:2px}
 .rohead{display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:8px 15px;border-top:1px solid var(--line-soft);background:var(--frame-bg)}
-.rolabel{font-family:"Space Grotesk",system-ui,sans-serif;font-size:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
+.rolabel{font-family:"Space Grotesk",system-ui,sans-serif;font-size:15.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--frame)}
 .swx{display:flex;align-items:center;gap:7px;border:0;background:none;cursor:pointer;padding:2px 0;font-family:inherit}
 .swx-track{width:30px;height:17px;border-radius:999px;background:var(--track);
   box-shadow:inset 0 0 0 1px var(--line);position:relative;transition:background .18s}
@@ -170,7 +172,7 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .swx[aria-checked="true"] .swx-track{background:var(--ok);box-shadow:none}
 .swx[aria-checked="true"] .swx-txt{color:var(--ok)}
 .swx[aria-checked="true"] .swx-knob{transform:translateX(13px)}
-.swx-txt{font-size:11px;color:var(--muted)}
+.swx-txt{font-size:13px;color:var(--muted)}
 .swx[aria-checked="true"] .swx-txt{color:var(--ink-2)}
 .swx:focus-visible{outline:2px solid var(--glu);outline-offset:3px;border-radius:6px}
 .readouts{border-top:0}
@@ -183,56 +185,56 @@ nav.tabs button:focus-visible,.btn:focus-visible,select:focus-visible{outline:2p
 .rb-mark.ok{background:var(--ok)}
 .rb-grown{color:var(--warn)}
 .rb-ends{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;
-  font-size:9px;color:var(--muted);margin-top:2px}
+  font-size:12px;color:var(--muted);margin-top:2px}
 .ro.flag .v{color:var(--alarm)}.ro.warnf .v{color:var(--warn)}
 /* trace strip */
 .strip{border-top:1px solid var(--line-soft);padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:820px){.strip{grid-template-columns:1fr}}
-.mini .mrow{display:flex;gap:5px;align-items:center;margin-bottom:5px}
-.mini .mrow select{flex:1;min-width:0;margin:0}
-.mini .mrow .vs{font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
-.mini .mrow .xg{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0 2px}
+.mini .mrow{display:grid;grid-template-columns:1fr auto;gap:4px 6px;align-items:center;margin-bottom:6px}
+.mini .mrow select{min-width:0;width:100%;margin:0}
+.mini .mrow .vs{font-size:12px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+.mini .mrow .xg{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;padding:0 2px}
 .mini.addg{display:flex;align-items:center;justify-content:center;min-height:118px}
 .mini canvas{cursor:crosshair;border-radius:5px}
-.miniprobe,.mprobe{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-2);min-height:15px;margin-top:2px}
-.pinlab{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.miniprobe,.mprobe{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);min-height:15px;margin-top:2px}
+.pinlab{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 #pinlist{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:7px}
-.pin{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-2);padding:3px 9px;
+.pin{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);padding:3px 9px;
   border:1px solid var(--line);border-radius:999px;background:var(--panel-2)}
-.mini h4{font-size:11px;font-weight:500;color:var(--muted);margin:0 0 5px}
-.mini select{width:100%;font-family:"IBM Plex Sans",sans-serif;font-size:11px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);margin-bottom:5px}
+.mini h4{font-size:13px;font-weight:500;color:var(--muted);margin:0 0 5px}
+.mini select{width:100%;font-family:"IBM Plex Sans",sans-serif;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);margin-bottom:5px}
 .mini canvas{width:100%;height:104px;display:block}
 /* controls */
 .ctl{margin-bottom:14px}.ctl:last-child{margin-bottom:0}
-.ctl label.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:500;margin-bottom:6px}
-.ctl label.lab .val{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-2)}
+.ctl label.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;font-weight:500;margin-bottom:6px}
+.ctl label.lab .val{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-2)}
 #loglist{max-height:150px;overflow-y:auto}
-.logrow{display:flex;gap:8px;font-size:11.5px;color:var(--ink-2);padding:2px 0;border-bottom:1px solid var(--line-soft)}
+.logrow{display:flex;gap:8px;font-size:13px;color:var(--ink-2);padding:2px 0;border-bottom:1px solid var(--line-soft)}
 .logrow:last-child{border-bottom:0}
-.logt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);min-width:44px;text-align:right}
-.logempty{font-size:11px;color:var(--muted);line-height:1.45}
+.logt{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);min-width:44px;text-align:right}
+.logempty{font-size:13px;color:var(--muted);line-height:1.45}
 .qm{margin-left:5px;margin-right:auto;width:15px;height:15px;min-width:15px;border-radius:50%;border:1px solid var(--line);
-  background:var(--panel-2);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  background:var(--panel-2);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:12px;
   line-height:1;cursor:pointer;padding:0;vertical-align:middle}
 .qm:hover{border-color:var(--glu);color:var(--glu)}
 .qm:focus-visible{outline:2px solid var(--glu);outline-offset:1px}
 #helppop{position:fixed;z-index:70;max-width:290px;background:var(--panel);border:1px solid var(--line);
   border-radius:9px;padding:12px 14px;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);display:none}
-#helppop h5{font-family:"Space Grotesk",sans-serif;font-size:12px;margin:0 0 5px;font-weight:600}
-#helppop p{margin:0 0 7px;font-size:11.5px;color:var(--ink-2);line-height:1.45}
-#helppop .eg{font-size:11px;color:var(--muted);font-style:italic;margin:0}
+#helppop h5{font-family:"Space Grotesk",sans-serif;font-size:13.5px;margin:0 0 5px;font-weight:600}
+#helppop p{margin:0 0 7px;font-size:13px;color:var(--ink-2);line-height:1.45}
+#helppop .eg{font-size:13px;color:var(--muted);font-style:italic;margin:0}
 #helppop button{margin-top:9px}
-.ctl .desc{font-size:11px;color:var(--ink-2);margin-top:5px;line-height:1.4}
+.ctl .desc{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.4}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;margin:0}
 input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:#DDE5EA}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--panel);border:2px solid var(--ink);margin-top:-5.5px;box-shadow:0 1px 3px rgba(0,0,0,.16)}
 input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:#DDE5EA}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--panel);border:2px solid var(--ink)}
 .seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
-.seg button{flex:1;padding:6px 4px;border:0;background:var(--panel);cursor:pointer;font-family:"IBM Plex Sans",sans-serif;font-size:11px;color:var(--ink-2);border-right:1px solid var(--line-soft)}
+.seg button{flex:1;padding:6px 4px;border:0;background:var(--panel);cursor:pointer;font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--ink-2);border-right:1px solid var(--line-soft)}
 .seg button:last-child{border-right:0}
 .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
-.btn{font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:500;padding:7px 13px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.14s}
+.btn{font-family:"Space Grotesk",sans-serif;font-size:13.5px;font-weight:500;padding:7px 13px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.14s}
 .btn:hover{border-color:#A9BCC7;background:var(--panel-2)}
 .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn.go{background:var(--conv);border-color:var(--conv);color:#fff}
@@ -243,57 +245,57 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .toggle[aria-pressed="true"] .sw{background:var(--ket)}
 .toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.18s}
 .toggle[aria-pressed="true"] .sw::after{transform:translateX(14px)}
-.toggle .tt b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:11.5px;font-weight:600}
-.toggle .tt span{display:block;font-size:10.5px;color:var(--muted);line-height:1.3;margin-top:1px}
+.toggle .tt b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:600}
+.toggle .tt span{display:block;font-size:13px;color:var(--muted);line-height:1.3;margin-top:1px}
 .scen{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .scen button{text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);cursor:pointer;font-family:inherit}
 .scen button:hover{border-color:#A9BCC7;background:var(--panel-2)}
-.scen b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:11.5px;font-weight:600}
-.scen span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px;line-height:1.3}
+.scen b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:600}
+.scen span{display:block;font-size:13px;color:var(--muted);margin-top:1px;line-height:1.3}
 /* ledger */
 .ledger{margin-bottom:13px}.ledger:last-child{margin-bottom:0}
 .ledger .lh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.ledger .lh .t{font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:600}
-.ledger .lh .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+.ledger .lh .t{font-family:"Space Grotesk",sans-serif;font-size:13.5px;font-weight:600}
+.ledger .lh .n{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted)}
 .bar{display:flex;height:30px;border-radius:6px;overflow:hidden;background:var(--track);border:1px solid var(--line-soft)}
 .bar .sf{position:relative;transition:width .28s cubic-bezier(.4,0,.2,1);min-width:0;overflow:hidden}
-.bar .sf span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;color:#fff;opacity:0;transition:opacity .2s}
+.bar .sf span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:#fff;opacity:0;transition:opacity .2s}
 .bar .sf.wide span{opacity:1}
 .keys{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:7px}
-.keys .kk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-2)}
+.keys .kk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
 .keys .sw2{width:10px;height:10px;border-radius:3px;flex:none}
-.keys .kv{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:10.5px}
+.keys .kv{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:13px}
 /* graphs tab */
 #bigPlot{width:100%;height:420px;display:block}
 .snapline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.snapline .sn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);display:flex;gap:6px;align-items:center}
-.snapline .sn button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:12.5px;line-height:1;padding:0}
+.snapline .sn{font-family:"IBM Plex Mono",monospace;font-size:13px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);display:flex;gap:6px;align-items:center}
+.snapline .sn button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1;padding:0}
 /* cases */
 .cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start}
 .chart-h{background:linear-gradient(180deg,#20323C,#16232B);color:#fff;padding:12px 15px;border-radius:var(--r) var(--r) 0 0}
-.chart-h .nm{font-family:"Space Grotesk",sans-serif;font-size:15px;font-weight:600}
-.chart-h .mrn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;opacity:.7;letter-spacing:.06em;margin-top:2px}
-.vitals{width:100%;border-collapse:collapse;margin:10px 0;font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+.chart-h .nm{font-family:"Space Grotesk",sans-serif;font-size:16px;font-weight:600}
+.chart-h .mrn{font-family:"IBM Plex Mono",monospace;font-size:13px;opacity:.7;letter-spacing:.06em;margin-top:2px}
+.vitals{width:100%;border-collapse:collapse;margin:10px 0;font-family:"IBM Plex Mono",monospace;font-size:13px}
 .vitals td{padding:4px 6px;border-bottom:1px solid var(--line-soft)}
 .vitals td:last-child{text-align:right;color:var(--muted)}
 .vitals .ab{color:var(--alarm);font-weight:600}
-.goal{border-left:3px solid var(--conv);background:var(--panel-2);padding:10px 12px;border-radius:0 6px 6px 0;margin:11px 0;font-size:12.5px}
+.goal{border-left:3px solid var(--conv);background:var(--panel-2);padding:10px 12px;border-radius:0 6px 6px 0;margin:11px 0;font-size:14px}
 .goal b{font-family:"Space Grotesk",sans-serif}
-.status{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:8px 11px;border-radius:6px;margin-top:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted)}
+.status{font-family:"IBM Plex Mono",monospace;font-size:13px;padding:8px 11px;border-radius:6px;margin-top:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted)}
 .status.won{border-color:#B8D8C4;background:#EEF7F1;color:var(--ok)}
 .debrief{display:none;margin-top:11px;padding-top:11px;border-top:1px solid var(--line-soft)}
 .debrief.show{display:block}
-.debrief p{margin:0 0 9px;font-size:13px;color:var(--ink-2)}
+.debrief p{margin:0 0 9px;font-size:14px;color:var(--ink-2)}
 .debrief p:last-child{margin:0}
 .modbanner{border-left:3px solid var(--conv)}
 #mb_mini{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:60;max-width:min(920px,94vw);
   display:flex;align-items:center;gap:12px;padding:9px 12px 9px 16px;border-radius:12px;
-  background:var(--panel);border:1.5px solid #C2410C;box-shadow:0 10px 30px rgba(15,23,42,.18);font-size:13.5px}
-#mb_mini_k{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#C2410C;white-space:nowrap;font-weight:600}
+  background:var(--panel);border:1.5px solid #C2410C;box-shadow:0 10px 30px rgba(15,23,42,.18);font-size:14.5px}
+#mb_mini_k{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#C2410C;white-space:nowrap;font-weight:600}
 #mb_mini_t{flex:1;color:var(--ink);font-weight:600;line-height:1.35}
-#mb_mini .btn{padding:4px 10px;font-size:11.5px;white-space:nowrap}
+#mb_mini .btn{padding:4px 10px;font-size:13px;white-space:nowrap}
 .mustread{scroll-margin-top:90px}
-.msteps{margin:6px 0 0;padding-left:22px;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.msteps{margin:6px 0 0;padding-left:22px;font-size:14px;line-height:1.45;color:var(--ink-2)}
 .msteps.long{columns:2;column-gap:34px}
 .msteps.long li{break-inside:avoid}
 @media(max-width:900px){.msteps.long{columns:1}}
@@ -311,10 +313,10 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
   box-shadow:0 10px 30px rgba(15,23,42,.20);cursor:pointer;animation:nudge 1.3s ease-in-out infinite}
 #mb_point.down{bottom:26px}
 #mb_point.up{top:96px}
-#mb_point span:first-child{font-size:26px;line-height:1;color:#C2410C}
+#mb_point span:first-child{font-size:27px;line-height:1;color:#C2410C}
 #mb_point span:last-child{font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#C2410C;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.showme.nudge,#mb_mini_hint.nudge,#mb_point{animation:none}}
-.nowtag{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;font-size:10.5px;font-weight:600;
+.nowtag{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;font-size:13px;font-weight:600;
   font-family:"IBM Plex Mono",monospace;letter-spacing:.04em;color:#fff;background:#C2410C;vertical-align:1px}
 @keyframes mustread{0%,100%{box-shadow:0 0 0 0 rgba(194,65,12,0),inset 0 0 0 2px rgba(194,65,12,.9)}
   50%{box-shadow:0 0 0 6px rgba(194,65,12,.35),inset 0 0 0 2px rgba(194,65,12,1)}}
@@ -332,37 +334,37 @@ button.mustread{border-color:#C2410C!important}
 .wbtn.worient b{color:#C2410C}
 .omrow{display:flex;align-items:center;gap:11px;padding:9px 2px;border-bottom:1px solid var(--line-soft)}
 .omrow:last-child{border-bottom:0}
-.omrow .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:20px}
+.omrow .n{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);min-width:20px}
 .omrow .t{flex:1;min-width:0}
-.omrow .t b{display:block;font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:600;color:var(--ink)}
-.omrow .t span{display:block;font-size:11.5px;color:var(--ink-2);line-height:1.4}
-.omrow .lv{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);white-space:nowrap}
-.omrow .dn{color:var(--ok);font-size:11px;white-space:nowrap}
-.mb-k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.modcard .kind{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.omrow .t b{display:block;font-family:"Space Grotesk",sans-serif;font-size:14px;font-weight:600;color:var(--ink)}
+.omrow .t span{display:block;font-size:13px;color:var(--ink-2);line-height:1.4}
+.omrow .lv{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);white-space:nowrap}
+.omrow .dn{color:var(--ok);font-size:13px;white-space:nowrap}
+.mb-k{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.modcard .kind{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
 .modcard .kind.ch{color:var(--conv);border-color:#B8D8C4;background:#EEF7F1}
 .modcard .kind.or{color:var(--gly);border-color:#B9D3E6;background:#EBF3F9}
 .modcard .kind.pt{color:var(--atp);border-color:#EFC0BA;background:#FDEEEC}
 .modcard.done{border-color:#B8D8C4}
-.modcard .det{font-size:13px;color:var(--ink);margin:0}
-.modcard .brief{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+.modcard .det{font-size:14px;color:var(--ink);margin:0}
+.modcard .brief{font-size:14px;color:var(--ink-2);margin:0 0 10px}
 .overlay{position:fixed;inset:0;background:rgba(22,35,43,.55);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .wcard{background:var(--panel);border-radius:14px;box-shadow:0 24px 60px -20px rgba(22,35,43,.45);padding:28px 30px;max-width:620px;width:100%}
 .wsec{margin-top:16px}
-.wlab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.wlab{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .wlevels{display:flex;gap:6px;flex-wrap:wrap}
-.wlevels button{font-family:"Space Grotesk",sans-serif;font-size:11.5px;padding:7px 11px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink);text-align:left}
+.wlevels button{font-family:"Space Grotesk",sans-serif;font-size:13px;padding:7px 11px;border-radius:7px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink);text-align:left}
 .wlevels button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .wlevels .wopen{flex-basis:100%;border-style:dashed;border-color:#A9BCC7}
 .wlevels .wopen small{opacity:.9}
-.wlevels button small{display:block;font-size:10px;opacity:.75;font-family:"IBM Plex Sans",sans-serif}
+.wlevels button small{display:block;font-size:12px;opacity:.75;font-family:"IBM Plex Sans",sans-serif}
 .wbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:560px){.wbtns{grid-template-columns:1fr}}
 .wbtn{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);cursor:pointer;font-family:inherit;transition:.14s}
 .wbtn:hover:not(:disabled){border-color:var(--conv);background:var(--panel-2)}
 .wbtn:disabled{opacity:.4;cursor:not-allowed}
-.wbtn b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:600}
-.wbtn span{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.35}
+.wbtn b{color:var(--ink);display:block;font-family:"Space Grotesk",sans-serif;font-size:14px;font-weight:600}
+.wbtn span{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
 #tour.overlay{background:none;backdrop-filter:none}
 #tour{position:fixed;inset:0;z-index:60;pointer-events:none}
 #tourSpot{position:absolute;border:2px solid var(--conv);border-radius:10px;
@@ -374,9 +376,9 @@ button.mustread{border-color:#C2410C!important}
   box-shadow:0 16px 40px -12px rgba(22,35,43,.5);pointer-events:auto;opacity:0;
   transition:left .3s cubic-bezier(.4,0,.2,1),top .3s cubic-bezier(.4,0,.2,1),opacity .18s linear}
 #tourCard.settle{transition:opacity .18s linear}
-.ab{margin:0 0 11px;font-size:13px;color:var(--ink-2);line-height:1.55}
-.abh{font-family:"Space Grotesk",sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px}
-.foot{margin-top:24px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
+.ab{margin:0 0 11px;font-size:14px;color:var(--ink-2);line-height:1.55}
+.abh{font-family:"Space Grotesk",sans-serif;font-size:13px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px}
+.foot{margin-top:24px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
@@ -386,8 +388,8 @@ button.mustread{border-color:#C2410C!important}
 <div class="overlay" id="welcome">
   <div class="wcard">
     <span class="eyebrow">Regulation of blood glucose</span>
-    <h1 style="font-size:30px;margin:4px 0 10px">EnergyFlow</h1>
-    <p style="margin:0 0 18px;color:var(--ink-2);font-size:14px;max-width:56ch">A model of how the body moves chemical energy between the blood, its reserves, and the cells that spend it. Reservoirs hold energy; arrows are the rates at which it moves.</p>
+    <h1 style="font-size:31px;margin:4px 0 10px">EnergyFlow</h1>
+    <p style="margin:0 0 18px;color:var(--ink-2);font-size:15.5px;max-width:56ch">A model of how the body moves chemical energy between the blood, its reserves, and the cells that spend it. Reservoirs hold energy; arrows are the rates at which it moves.</p>
     <div class="wsec">
       <button class="wbtn worient" data-start="orient"><b>New to EnergyFlow? Start with Orientation</b><span>A tour of the complete screen, then five short hands-on tasks that build it up level by level. No level needed.</span></button>
     </div>
@@ -397,27 +399,27 @@ button.mustread{border-color:#C2410C!important}
     </div>
     <div class="wsec" id="wstep2">
       <div class="wlab">Choose how to begin</div>
-        <div id="wgate" style="font-size:11.5px;color:var(--warn);margin-bottom:8px"></div>
+        <div id="wgate" style="font-size:13px;color:var(--warn);margin-bottom:8px"></div>
       <div class="wbtns">
         <button class="wbtn" data-start="modules"><b>Guided modules</b><span>Work through set investigations for this level</span></button>
         <button class="wbtn" data-start="model"><b>Open the model</b><span>Every control for this level, with no set task</span></button>
       </div>
     </div>
-    <div style="margin-top:16px;text-align:center"><button class="btn" id="about_open_w" style="font-size:11.5px;padding:5px 12px">About this model</button></div>
+    <div style="margin-top:16px;text-align:center"><button class="btn" id="about_open_w" style="font-size:13px;padding:5px 12px">About this model</button></div>
   </div>
 </div>
 
 <div id="helppop" role="dialog" aria-label="Control help">
   <h5 id="hp_t"></h5><p id="hp_b"></p><p class="eg" id="hp_e"></p>
-  <button class="btn" id="hp_x" style="padding:4px 11px;font-size:11.5px">Close</button>
+  <button class="btn" id="hp_x" style="padding:4px 11px;font-size:13px">Close</button>
 </div>
 
 <div class="overlay" id="doneask" style="display:none">
   <div class="wcard" style="max-width:480px">
     <span class="eyebrow" id="dn_k"></span>
-    <h2 id="dn_t" style="font-size:21px;margin:4px 0 8px"></h2>
-    <p id="dn_b" style="margin:0 0 6px;color:var(--ink-2);font-size:13.5px"></p>
-    <p id="dn_d" style="margin:0 0 16px;color:var(--ink-2);font-size:13.5px"></p>
+    <h2 id="dn_t" style="font-size:22px;margin:4px 0 8px"></h2>
+    <p id="dn_b" style="margin:0 0 6px;color:var(--ink-2);font-size:14.5px"></p>
+    <p id="dn_d" style="margin:0 0 16px;color:var(--ink-2);font-size:14.5px"></p>
     <div class="wbtns">
       <button class="wbtn" id="dn_stay"><b>Stay with this subject</b><span>Keep the model exactly as it is and carry on experimenting</span></button>
       <button class="wbtn" id="dn_again"><b>Start the module again</b><span>Return the subject to the state it presented in</span></button>
@@ -434,8 +436,8 @@ button.mustread{border-color:#C2410C!important}
 <div class="overlay" id="orientmenu" style="display:none">
   <div class="wcard" style="max-width:600px">
     <span class="eyebrow">Getting started</span>
-    <h2 style="font-size:21px;margin:4px 0 6px">Orientation</h2>
-    <p style="margin:0 0 16px;color:var(--ink-2);font-size:13.5px">Two ways in. The tour names each part of the screen; the five tasks have you use it. Each task opens at the level it belongs to, whatever level you are on now.</p>
+    <h2 style="font-size:22px;margin:4px 0 6px">Orientation</h2>
+    <p style="margin:0 0 16px;color:var(--ink-2);font-size:14.5px">Two ways in. The tour names each part of the screen; the five tasks have you use it. Each task opens at the level it belongs to, whatever level you are on now.</p>
     <div class="wbtns" style="margin-bottom:14px">
       <button class="wbtn" id="om_tour" style="grid-column:1/-1"><b>Tour the screen</b><span>About a minute, no clicking required</span></button>
     </div>
@@ -453,13 +455,13 @@ button.mustread{border-color:#C2410C!important}
 <div class="overlay" id="lvlask" style="display:none">
   <div class="wcard" style="max-width:470px">
     <span class="eyebrow" id="la_k"></span>
-    <h2 id="la_t" style="font-size:21px;margin:4px 0 8px"></h2>
-    <p id="la_b" style="margin:0 0 16px;color:var(--ink-2);font-size:13.5px"></p>
+    <h2 id="la_t" style="font-size:22px;margin:4px 0 8px"></h2>
+    <p id="la_b" style="margin:0 0 16px;color:var(--ink-2);font-size:14.5px"></p>
     <div class="wbtns">
       <button class="wbtn" id="la_tour"><b>Guided orientation</b><span>Walk through what is new at this level</span></button>
       <button class="wbtn" id="la_go"><b>Continue</b><span>Go straight to the model</span></button>
     </div>
-    <label style="display:flex;align-items:center;gap:7px;margin-top:14px;font-size:12px;color:var(--muted);cursor:pointer">
+    <label style="display:flex;align-items:center;gap:7px;margin-top:14px;font-size:13.5px;color:var(--muted);cursor:pointer">
       <input type="checkbox" id="la_never"> Do not ask again this session
     </label>
   </div>
@@ -469,8 +471,8 @@ button.mustread{border-color:#C2410C!important}
   <div id="tourSpot"></div>
   <div id="tourCard">
     <div class="mb-k" id="tourStep"></div>
-    <h3 id="tourTitle" style="font-size:16px;margin:3px 0 6px"></h3>
-    <p id="tourBody" style="margin:0;font-size:13px;color:var(--ink-2)"></p>
+    <h3 id="tourTitle" style="font-size:17px;margin:3px 0 6px"></h3>
+    <p id="tourBody" style="margin:0;font-size:14px;color:var(--ink-2)"></p>
     <div class="runbar" style="margin-top:12px">
       <button class="btn primary" id="tourNext">Next</button>
       <button class="btn" id="tourEnd">Skip orientation</button>
@@ -481,7 +483,7 @@ button.mustread{border-color:#C2410C!important}
 <div class="overlay" id="about" style="display:none">
   <div class="wcard" style="max-width:640px">
     <span class="eyebrow">About</span>
-    <h2 style="font-size:23px;margin:4px 0 12px">EnergyFlow</h2>
+    <h2 style="font-size:24px;margin:4px 0 12px">EnergyFlow</h2>
     <p class="ab">An interactive model of human energy metabolism. Each box is a reservoir of chemical energy and each arrow is a rate of transfer between reservoirs; insulin and glucagon regulate those rates.</p>
     <h4 class="abh">Why it is built this way</h4>
     <p class="ab">A conventional simulation provides controls and graphical output but leaves the intervening mechanism hidden, while a static diagram shows the mechanism but cannot be run. This model presents both together, and the guided modules extend the same system to clinical reasoning.</p>
@@ -489,7 +491,7 @@ button.mustread{border-color:#C2410C!important}
     <p class="ab">This is a teaching model of energy flow; it is not a clinical tool. Its parameters were fitted to reproduce established physiological behavior rather than derived from first principles, so it is suitable for studying direction, sequence, and approximate magnitude.</p>
     <h4 class="abh">Credits</h4>
     <p class="ab">Developed by <b>Akhil Kandamkulathy</b>. Built with the assistance of Claude, an AI tool developed by Anthropic; the physiological content, calibration targets, and pedagogical design are the author’s own.</p>
-    <p class="ab" style="color:var(--muted);font-size:12px;margin-top:14px">© 2026 Akhil Kandamkulathy. Provided for educational use.</p>
+    <p class="ab" style="color:var(--muted);font-size:13.5px;margin-top:14px">© 2026 Akhil Kandamkulathy. Provided for educational use.</p>
     <div class="runbar" style="margin-top:16px"><button class="btn primary" id="about_close">Close</button></div>
   </div>
 </div>
@@ -498,8 +500,8 @@ button.mustread{border-color:#C2410C!important}
   <div class="wcard" style="max-width:640px">
     <div id="brief_chart"></div>
     <span class="eyebrow" id="brief_kind"></span>
-    <h2 id="brief_title" style="font-size:22px;margin:4px 0 10px"></h2>
-    <p id="brief_body" style="margin:0 0 14px;color:var(--ink-2);font-size:14px"></p>
+    <h2 id="brief_title" style="font-size:23px;margin:4px 0 10px"></h2>
+    <p id="brief_body" style="margin:0 0 14px;color:var(--ink-2);font-size:15.5px"></p>
     <div id="brief_vit"></div>
     <div class="goal" style="margin:14px 0"><b>Task.</b> <span id="brief_det"></span></div>
     <div class="runbar"><button class="btn primary" id="brief_go">Continue to the model</button>
@@ -520,8 +522,8 @@ button.mustread{border-color:#C2410C!important}
     <button role="tab" aria-selected="true" aria-controls="tab-control" id="t1">Control room</button>
     <button role="tab" aria-selected="false" aria-controls="tab-graphs" id="t2">Graphs</button>
     <button role="tab" aria-selected="false" aria-controls="tab-cases" id="t3">Modules</button>
-    <button id="btnTheme" title="Light or dark" style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer">Dark</button>
-    <button id="btnMenu" style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer">Menu</button>
+    <button id="btnTheme" title="Light or dark" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer">Dark</button>
+    <button id="btnMenu" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer">Menu</button>
   </nav>
 </header>
 
@@ -532,8 +534,8 @@ button.mustread{border-color:#C2410C!important}
     <div class="card-b" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
       <div style="flex:1;min-width:280px">
         <div class="mb-k" id="mb_lv"></div>
-        <h3 id="mb_title" style="font-size:16px;margin:3px 0 6px"></h3>
-        <p id="mb_det" style="margin:0;font-size:13.5px;color:var(--ink-2)"></p>
+        <h3 id="mb_title" style="font-size:17px;margin:3px 0 6px"></h3>
+        <p id="mb_det" style="margin:0;font-size:14.5px;color:var(--ink-2)"></p>
       </div>
       <div style="min-width:230px">
         <div class="status" id="mb_status" style="margin:0"></div>
@@ -552,7 +554,7 @@ button.mustread{border-color:#C2410C!important}
         <span class="hint" id="flowHint">Arrow thickness and pulse rate = rate of energy transfer</span>
       </div>
       <div class="card-b stage">
-        <svg id="stage" viewBox="0 0 1560 618" role="img" aria-label="Diagram of metabolic energy reservoirs and the flows between them">
+        <svg id="stage" viewBox="0 0 1560 700" role="img" aria-label="Diagram of metabolic energy reservoirs and the flows between them">
           <defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M1 1.5 L9 5 L1 8.5 z" fill="context-stroke"/></marker></defs>
           <g id="flows" fill="none" stroke-linecap="round"></g>
@@ -577,7 +579,7 @@ button.mustread{border-color:#C2410C!important}
 
     <div id="rightcol">
       <div class="card" id="controlCard">
-        <div class="card-h"><h3>Controls</h3><button class="btn" id="bDefaults" title="Return every control to its default without changing the subject" style="padding:3px 10px;font-size:11.5px">Defaults</button></div>
+        <div class="card-h"><h3>Controls</h3><button class="btn" id="bDefaults" title="Return every control to its default without changing the subject" style="padding:3px 10px;font-size:13px">Defaults</button></div>
         <div class="card-b" id="controlBody"></div>
       </div>
       <div class="card" style="margin-top:13px" id="clockCard">
@@ -593,24 +595,24 @@ button.mustread{border-color:#C2410C!important}
             <button class="btn" id="bUndo" disabled title="Step back to before your last advance">Undo</button>
             <button class="btn" id="bReset" title="Return the subject and the clock to the start">Reset</button>
           </div>
-          <div><label class="lab" style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:500;margin-bottom:6px">Advance by <span class="val mono" style="color:var(--ink-2)">then read the result</span></label>
+          <div><label class="lab" style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:6px">Advance by <span class="val mono" style="color:var(--ink-2)">then read the result</span></label>
           <div class="seg" id="cAdv" role="group" aria-label="Advance by">
             <button data-h="0.1667">10 min</button><button data-h="1">1 h</button>
             <button data-h="12">12 h</button><button data-h="24">24 h</button>
           </div>
-          <div class="desc" style="font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4">Set the controls, advance a fixed interval, then read the result.</div></div>
+          <div class="desc" style="font-size:13px;color:var(--muted);margin-top:5px;line-height:1.4">Set the controls, advance a fixed interval, then read the result.</div></div>
           <div style="margin-bottom:9px">
-            <label class="lab" style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:500;margin-bottom:6px">Give a meal <span class="val mono" id="vMeal" style="color:var(--ink-2)">none pending</span></label>
+            <label class="lab" style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:6px">Give a meal <span class="val mono" id="vMeal" style="color:var(--ink-2)">none pending</span></label>
             <div class="seg" id="cMeal" role="group" aria-label="Give a meal">
               <button data-m="300">Snack</button><button data-m="600">Meal</button><button data-m="1000">Large meal</button>
             </div>
-            <div class="desc" style="font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4">A single meal, absorbed over a few hours. Food intake above is a continuous background rate; this adds one discrete meal on top of it.</div>
+            <div class="desc" style="font-size:13px;color:var(--muted);margin-top:5px;line-height:1.4">A single meal, absorbed over a few hours. Food intake above is a continuous background rate; this adds one discrete meal on top of it.</div>
           </div>
         </div>
       </div>
       <div class="card" style="margin-top:13px">
         <div class="card-h"><h3>Control log</h3>
-          <button class="btn" id="bLogClear" style="padding:3px 9px;font-size:10.5px">Clear</button></div>
+          <button class="btn" id="bLogClear" style="padding:3px 9px;font-size:13px">Clear</button></div>
         <div class="card-b" style="padding:10px 12px"><div id="loglist"></div></div>
       </div>
       <div class="card" style="margin-top:13px">
@@ -636,10 +638,10 @@ button.mustread{border-color:#C2410C!important}
   <div class="card"><div class="card-h"><h3 id="gTitle">Graph</h3>
     <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <span class="hint mono" id="gLeg"></span><span class="hint">hover to read, click to save a point</span>
-      <button class="btn" id="bSnap" style="padding:5px 10px;font-size:11.5px">Save this run</button>
-      <button class="btn" id="bClear" style="padding:5px 10px;font-size:11.5px">Clear</button>
+      <button class="btn" id="bSnap" style="padding:5px 10px;font-size:13px">Save this run</button>
+      <button class="btn" id="bClear" style="padding:5px 10px;font-size:13px">Clear</button>
     </span></div>
-    <div class="card-b"><canvas id="bigPlot"></canvas><div class="mono" id="probe" style="min-height:19px;font-size:12px;color:var(--ink-2);margin-top:6px"></div><div id="pinlist"></div><div class="snapline" id="snaps"></div></div></div>
+    <div class="card-b"><canvas id="bigPlot"></canvas><div class="mono" id="probe" style="min-height:19px;font-size:13.5px;color:var(--ink-2);margin-top:6px"></div><div id="pinlist"></div><div class="snapline" id="snaps"></div></div></div>
   <div class="card" style="margin-top:14px"><div class="card-h"><h3>All graphs</h3>
     <span class="hint">click a graph to expand it above · hover the expanded plot to read values</span></div>
     <div class="card-b"><div class="strip" id="ggrid"></div></div></div>
@@ -649,7 +651,7 @@ button.mustread{border-color:#C2410C!important}
   <div class="cases" id="cases"></div>
 </section>
 
-<div class="foot"><span id="foot"></span> · <button class="btn" id="about_open" style="padding:3px 10px;font-size:11px">About</button></div>
+<div class="foot"><span id="foot"></span> · <button class="btn" id="about_open" style="padding:3px 10px;font-size:13px">About</button></div>
 </div>
 
 <script>
@@ -843,12 +845,12 @@ const NODES=[
  {id:'prot',  x:96,  y:314,w:228,h:64, c:'pro', t:'Cell protein',     s:'structural, not a fuel store', fill:1},
  {id:'pool',  x:566, y:104,w:330,h:108,c:'glu', t:'Blood glucose pool',s:'circulating transit pool', big:1, fill:1, transit:1},
  {id:'adip',  x:1276,y:16, w:248,h:66, c:'fat', t:'Adipose lipid',    s:'long-term reserve', fill:1},
- {id:'fa',    x:1276,y:118,w:248,h:64, c:'fa',  t:'Fatty acids',      s:'circulating, from lipolysis', transit:1},
+ {id:'fa',    x:1276,y:132,w:248,h:64, c:'fa',  t:'Fatty acids',      s:'circulating, from lipolysis', transit:1},
  {id:'lconv', x:430, y:346,w:280,h:132,c:'conv',t:'Liver convergence',s:'processed in the liver', big:1, conv:1, funnel:1},
  {id:'ket',   x:788, y:378,w:210,h:66, c:'ket', t:'Ketone bodies',    s:'circulating, made in the liver', transit:1},
  {id:'sconv', x:1076,y:346,w:280,h:132,c:'conv',t:'Systemic convergence',s:'all tissues outside the liver', big:1, conv:1},
- {id:'lwork', x:462, y:536,w:216,h:62, c:'atp', t:'Liver energy use', s:'work and heat', rate:1},
- {id:'swork', x:1108,y:536,w:216,h:62, c:'atp', t:'Systemic energy use',s:'work and heat', rate:1}
+ {id:'lwork', x:462, y:604,w:216,h:62, c:'atp', t:'Liver energy use', s:'work and heat', rate:1},
+ {id:'swork', x:1108,y:604,w:216,h:62, c:'atp', t:'Systemic energy use',s:'work and heat', rate:1}
 ];
 
 const FLOWS=[
@@ -860,18 +862,18 @@ const FLOWS=[
  {id:'f_pool_mus',  d:'M590 208 Q460 240 328 244'},
  {id:'f_mus_sconv', d:'M324 252 Q350 252 350 288 L350 496 Q350 512 424 512 L1028 512 Q1072 512 1072 460 L1072 424',
                     lab:'spent in the muscle itself', lx:724,ly:504,a:'middle'},
- {id:'f_prot_pool', d:'M324 330 Q492 300 568 214',                   lab:'gluconeogenesis',lx:334,ly:316,a:'start'},
- {id:'f_pool_lconv',d:'M618 216 L566 340',                           lab:'constitutive',   lx:550,ly:284,a:'end'},
- {id:'f_pool_sconv',d:'M896 210 Q1060 258 1180 340',                 lab:'glucose uptake', lx:920,ly:278,a:'start'},
- {id:'f_pool_adip', d:'M896 116 Q1090 56 1272 34',                   lab:'lipogenesis',    lx:1082,ly:82,a:'middle'},
+ {id:'f_prot_pool', d:'M324 330 Q492 300 568 214',                   lab:'gluconeogenesis',lx:394,ly:300,a:'start'},
+ {id:'f_pool_lconv',d:'M618 216 L566 340',                           lab:'constitutive',   lx:602,ly:278,a:'start'},
+ {id:'f_pool_sconv',d:'M896 210 Q1060 258 1180 340',                 lab:'glucose uptake', lx:920,ly:270,a:'start'},
+ {id:'f_pool_adip', d:'M896 116 Q1090 56 1272 34',                   lab:'lipogenesis',    lx:1055,ly:82,a:'middle'},
  {id:'f_adip_pool', d:'M1312 82 Q1110 118 900 150',                  lab:'glycerol',       lx:1130,ly:140,a:'middle'},
- {id:'f_adip_fa',   d:'M1396 82 L1396 114',                          lab:'lipolysis',      lx:1416,ly:104,a:'start'},
+ {id:'f_adip_fa',   d:'M1396 82 L1396 128',                          lab:'lipolysis',      lx:1416,ly:110,a:'start'},
  {id:'f_fa_lconv',  d:'M1276 160 Q880 218 710 370'},
- {id:'f_fa_sconv',  d:'M1396 182 L1396 340 Q1396 378 1352 378',      lab:'oxidation',      lx:1414,ly:264,a:'start'},
+ {id:'f_fa_sconv',  d:'M1396 196 L1396 340 Q1396 378 1352 378',      lab:'oxidation',      lx:1414,ly:264,a:'start'},
  {id:'f_lconv_ket', d:'M710 396 Q748 380 784 402',                   lab:'ketogenesis',    lx:756,ly:366,a:'start'},
  {id:'f_ket_sconv', d:'M998 412 L1072 412'},
- {id:'f_lconv_work',d:'M570 480 L570 532',                           lab:'expenditure',    lx:582,ly:528,a:'start'},
- {id:'f_sconv_work',d:'M1216 480 L1216 532',                         lab:'expenditure',    lx:1228,ly:528,a:'start'}
+ {id:'f_lconv_work',d:'M570 480 L570 600',                           lab:'expenditure',    lx:582,ly:566,a:'start'},
+ {id:'f_sconv_work',d:'M1216 480 L1216 600',                         lab:'expenditure',    lx:1228,ly:566,a:'start'}
 ];
 
 const REGS=[
@@ -879,8 +881,8 @@ const REGS=[
  {h:'ins',s:'+',flow:'f_pool_liver',x:504,y:154,sx:504,sy:168,k:'liverStore',   nd:['pool','liver']},
  {h:'ins',s:'+',flow:'f_pool_sconv',x:1026,y:288,sx:1046,sy:266,k:'idUptake',   nd:['pool','sconv']},
  {h:'ins',s:'+',flow:'f_pool_adip', x:1122,y:88,sx:1102,sy:66,k:'lipogenesis',  nd:['pool','adip']},
- {h:'ins',s:'\u2212',flow:'f_adip_fa',x:1358,y:84,sx:1390,sy:84,k:'insBrake',   nd:['adip','fa']},
- {h:'gcg',s:'+',flow:'f_adip_fa',   x:1358,y:112,sx:1390,sy:112,k:'lipo',       nd:['adip','fa']},
+ {h:'ins',s:'\u2212',flow:'f_adip_fa',x:1358,y:92,sx:1390,sy:92,k:'insBrake',   nd:['adip','fa']},
+ {h:'gcg',s:'+',flow:'f_adip_fa',   x:1358,y:118,sx:1390,sy:118,k:'lipo',       nd:['adip','fa']},
  {h:'gcg',s:'+',flow:'f_prot_pool', x:406,y:318,sx:426,sy:300,k:'gngAA',        nd:['prot','pool']},
  {h:'gcg',s:'+',flow:'f_lconv_ket', x:748,y:418,sx:748,sy:394,k:'ketoProd',lv:5,nd:['lconv','ket']}
 ];
@@ -969,9 +971,9 @@ function buildStage(){
     gF.appendChild(p);
     if(f.lab){const t=document.createElementNS(NS,'text');
       t.setAttribute('x',f.lx);t.setAttribute('y',f.ly);t.setAttribute('text-anchor',f.a||'middle');
-      t.setAttribute('font-size','13');t.setAttribute('fill',cssv('--svg-label'));
+      t.setAttribute('font-size','16');t.setAttribute('fill',cssv('--svg-label'));
       t.setAttribute('font-family','IBM Plex Mono, monospace');
-      t.setAttribute('stroke',cssv('--svg-halo'));t.setAttribute('stroke-width','3.2');
+      t.setAttribute('stroke',cssv('--svg-halo'));t.setAttribute('stroke-width','4.2');
       t.setAttribute('paint-order','stroke');t.setAttribute('stroke-linejoin','round');
       t.setAttribute('id','lab_'+f.id);t.textContent=f.lab;gL.appendChild(t);}
   });
@@ -1024,14 +1026,14 @@ function buildStage(){
       t.setAttribute('x',cx);t.setAttribute('y',n.y+y);t.setAttribute('text-anchor','middle');
       t.setAttribute('font-size',sz);t.setAttribute('fill',fl);if(w2)t.setAttribute('font-weight',w2);
       t.setAttribute('font-family',fam||'Space Grotesk, sans-serif');g.appendChild(t);return t;};
-    T(n.conv?30:Math.round(n.h*0.36), n.big?18:15.5,'600',col).textContent=n.t;
-    T(n.conv?52:Math.round(n.h*0.60), 13,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
-    T(n.conv?78:Math.round(n.h*0.85), n.conv?14.5:(n.big?15.5:13),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
+    T(n.conv?30:Math.round(n.h*0.32), n.big?19.5:17,'600',col).textContent=n.t;
+    T(n.conv?53:Math.round(n.h*0.60), 14,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
+    T(n.conv?78:Math.round(n.h*0.90), n.conv?16.5:(n.big?16.5:14.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
     g.setAttribute('id','nd_'+n.id);
     if(n.tag){
       const tg=document.createElementNS(NS,'text');
       tg.setAttribute('x',n.x+7); tg.setAttribute('y',n.y+n.h-5);
-      tg.setAttribute('font-size','9'); tg.setAttribute('letter-spacing','.08em');
+      tg.setAttribute('font-size','12'); tg.setAttribute('letter-spacing','.08em');
       tg.setAttribute('font-family','IBM Plex Mono, monospace');
       tg.setAttribute('fill',cssv(COL[n.c])); tg.setAttribute('opacity','.85');
       tg.textContent='\u2298 NOT SHARED'; g.appendChild(tg);
@@ -1040,17 +1042,17 @@ function buildStage(){
       g.style.cursor='help';
       g.addEventListener('click',ev=>{ ev.stopPropagation(); showNodeHelp(n.id,g); });
       const mk=document.createElementNS(NS,'text');
-      mk.setAttribute('x',n.x+n.w-9); mk.setAttribute('y',n.y+13);
-      mk.setAttribute('text-anchor','end'); mk.setAttribute('font-size','9');
+      mk.setAttribute('x',n.x+n.w-6); mk.setAttribute('y',n.y+14);
+      mk.setAttribute('text-anchor','end'); mk.setAttribute('font-size','12');
       mk.setAttribute('font-family','IBM Plex Mono, monospace');
       mk.setAttribute('fill',cssv(COL[n.c])); mk.setAttribute('opacity','.55');
       mk.textContent='?'; g.appendChild(mk);
     }
     if(n.id==='sconv'){
-      T(92,9,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
+      T(94,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
     }
     if(n.id==='lconv'){
-      const bx=n.x+40,by=n.y+94,bw=n.w-80;
+      const bx=n.x+40,by=n.y+98,bw=n.w-80;
       const tr=document.createElementNS(NS,'rect');
       tr.setAttribute('x',bx);tr.setAttribute('y',by);tr.setAttribute('width',bw);tr.setAttribute('height',6);
       tr.setAttribute('rx',3);tr.setAttribute('fill',cssv('--svg-face'));tr.setAttribute('stroke',col);
@@ -1058,7 +1060,7 @@ function buildStage(){
       const fr=document.createElementNS(NS,'rect');fr.setAttribute('id','capbar');
       fr.setAttribute('x',bx+1);fr.setAttribute('y',by+1);fr.setAttribute('width',0);
       fr.setAttribute('height',4);fr.setAttribute('rx',2);fr.setAttribute('fill',col);g.appendChild(fr);
-      T(92,10.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
+      T(94,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
     }
     gN.appendChild(g);
   });
@@ -1079,7 +1081,7 @@ function buildStage(){
       g.appendChild(c);
       const t=document.createElementNS(NS,'text');
       t.setAttribute('x',r.x);t.setAttribute('y',r.y+3.6);t.setAttribute('text-anchor','middle');
-      t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('fill',cssv('--'+r.h));
+      t.setAttribute('font-size','16');t.setAttribute('font-weight','700');t.setAttribute('fill',cssv('--'+r.h));
       t.setAttribute('font-family','IBM Plex Mono, monospace');t.textContent=r.s;g.appendChild(t);
       gB.appendChild(g);
     });
@@ -1088,7 +1090,7 @@ function buildStage(){
 }
 function buildHormoneBox(){
   const gH=$('hormonebox');
-  const bx=32,by=506,bw=272,bh=104;
+  const bx=32,by=566,bw=356,bh=104;
   const r=document.createElementNS(NS,'rect');
   r.setAttribute('x',bx);r.setAttribute('y',by);r.setAttribute('width',bw);r.setAttribute('height',bh);
   r.setAttribute('rx',8);r.setAttribute('fill',cssv('--panel-2'));r.setAttribute('stroke',cssv('--ink-2'));
@@ -1110,23 +1112,23 @@ function buildHormoneBox(){
     c.setAttribute('cx',bx+18);c.setAttribute('cy',yy-4);c.setAttribute('r',6.5);
     c.setAttribute('fill',cssv('--'+h));c.setAttribute('id','hdot_'+h);g.appendChild(c);
     const t=document.createElementNS(NS,'text');
-    t.setAttribute('x',bx+32);t.setAttribute('y',yy);t.setAttribute('font-size','11.5');
+    t.setAttribute('x',bx+32);t.setAttribute('y',yy);t.setAttribute('font-size','14');
     t.setAttribute('font-weight','600');t.setAttribute('fill',cssv('--'+h));
     t.setAttribute('font-family','Space Grotesk, sans-serif');t.textContent=nm;g.appendChild(t);
     const v=document.createElementNS(NS,'text');
     v.setAttribute('x',bx+bw-10);v.setAttribute('y',yy);v.setAttribute('text-anchor','end');
-    v.setAttribute('font-size','12.5');v.setAttribute('fill',cssv('--svg-label'));v.setAttribute('id','hval_'+h);
+    v.setAttribute('font-size','15');v.setAttribute('fill',cssv('--svg-label'));v.setAttribute('id','hval_'+h);
     v.setAttribute('font-family','IBM Plex Mono, monospace');g.appendChild(v);
     gH.appendChild(g);
   });
   const hint=document.createElementNS(NS,'text');
-  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+13);hint.setAttribute('font-size','9');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
-  hint.setAttribute('fill',cssv('--ink-2'));hint.setAttribute('font-family','IBM Plex Mono, monospace');
+  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+13);hint.setAttribute('font-size','11.5');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
+  hint.setAttribute('fill',cssv('--ink-2'));hint.setAttribute('font-family','IBM Plex Mono, monospace');hint.setAttribute('stroke',cssv('--panel-2'));hint.setAttribute('stroke-width','3');hint.setAttribute('paint-order','stroke');
   hint.textContent='\u25b8 SENSED ABOVE \u2192 ACTS ON THE + AND \u2212 FLOWS';gH.appendChild(hint);
   // an explicit sensing arrow, so the diagram reads as a closed loop rather than
   // a flow chart with regulators attached beside it
   const sense=document.createElementNS(NS,'path');
-  sense.setAttribute('d','M574 214 Q420 300 384 420 Q372 496 '+(bx+bw+8)+' '+(by+32));
+  sense.setAttribute('d','M574 214 Q392 236 352 330 Q318 430 300 500 Q290 548 '+(bx+bw-40)+' '+(by-6));
   sense.setAttribute('id','senseArrow');
   sense.setAttribute('stroke',cssv('--svg-label')); sense.setAttribute('stroke-width','2');
   sense.setAttribute('fill','none'); sense.setAttribute('opacity','.8');
@@ -1137,7 +1139,7 @@ function buildHormoneBox(){
   senseHit.removeAttribute('marker-end'); senseHit.removeAttribute('stroke-dasharray'); senseHit.setAttribute('pointer-events','stroke');
   senseHit.style.cursor='pointer'; gH.appendChild(senseHit);
   const sl=document.createElementNS(NS,'text');
-  sl.setAttribute('x',36); sl.setAttribute('y',496); sl.setAttribute('font-size','11');
+  sl.setAttribute('x',36); sl.setAttribute('y',556); sl.setAttribute('font-size','13');
   sl.setAttribute('fill',cssv('--svg-label')); sl.setAttribute('font-family','IBM Plex Mono, monospace');
   sl.setAttribute('stroke',cssv('--svg-halo')); sl.setAttribute('stroke-width','3');
   sl.setAttribute('paint-order','stroke'); sl.textContent='plasma [glucose] is sensed here';
@@ -1436,11 +1438,11 @@ function renderRes(d){
   const el=$('resList');
   if(el.children.length!==rows.length){
     el.innerHTML=rows.map((r,i)=>'<div style="margin-bottom:10px">'+
-      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px">'+
       '<span>'+r[0]+'</span><span class="mono" style="color:var(--muted)" id="rq'+i+'"></span></div>'+
       '<div style="height:7px;border-radius:4px;background:var(--track);overflow:hidden">'+
       '<div id="rb'+i+'" style="height:100%;width:0;background:'+cssv(r[3])+';opacity:.75;transition:width .3s"></div></div>'+
-      '<div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px" id="rk'+i+'"></div></div>').join('');
+      '<div class="mono" style="font-size:12px;color:var(--muted);margin-top:3px" id="rk'+i+'"></div></div>').join('');
   }
   rows.forEach((r,i)=>{$('rb'+i).style.width=(clamp01(r[1]/r[2])*100).toFixed(1)+'%';
     $('rq'+i).textContent=r[4];
@@ -1610,7 +1612,7 @@ function renderPins(cv,outEl){
     return '<span class="pin">'+parts.join('  \u00b7  ')+'</span>';
   });
   holder.innerHTML='<span class="pinlab">Saved points</span>'+rows.join('')+
-    '<button class="btn" id="bPinClear" style="padding:2px 8px;font-size:10.5px">Clear</button>';
+    '<button class="btn" id="bPinClear" style="padding:2px 8px;font-size:13px">Clear</button>';
   const bc=$('bPinClear'); if(bc) bc.addEventListener('click',()=>{cv.pins=[];redrawProbe(cv);renderPins(cv,outEl);});
 }
 function redrawProbe(cv){
@@ -1965,10 +1967,10 @@ function buildModules(){
   const done=MODULES.filter(m=>m.lv<LEVEL).length, tot=MODULES.length;
   $('cases').insertAdjacentHTML('afterbegin','<div class="card" style="grid-column:1/-1"><div class="card-b" '+
     'style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'+
-    '<span style="font-size:13px;color:var(--ink-2)"><b style="font-family:Space Grotesk,sans-serif">'+
+    '<span style="font-size:14px;color:var(--ink-2)"><b style="font-family:Space Grotesk,sans-serif">'+
     (LEVEL===7?'Open investigation':'Level '+LEVEL+' \u00b7 '+LEVELS[LEVEL].name)+'</b> \u00b7 '+list.length+' module'+(list.length===1?'':'s')+
     ' at this level. Earlier levels have their own; use the level bar above to move between them.</span>'+
-    '<span class="mono" style="font-size:11px;color:var(--muted)">'+done+' of '+tot+' modules lie below this level</span></div></div>');
+    '<span class="mono" style="font-size:13px;color:var(--muted)">'+done+' of '+tot+' modules lie below this level</span></div></div>');
   $('cases').querySelectorAll('[data-mod]').forEach(b=>b.addEventListener('click',()=>openMod(b.dataset.mod)));
   if(activeMod&&modDone[activeMod.id]){const db=$('db_'+activeMod.id); if(db)db.classList.add('show');}
 }
@@ -2208,7 +2210,8 @@ function tick(now){
 /* ================= INIT ================= */
 function buildLevelBar(){
   $('levelbar').innerHTML=[1,2,3,4,5,6].map(i=>
-    '<button class="lv" data-l="'+i+'" aria-pressed="'+(i===LEVEL)+'">Level '+i+'</button>').join('')+
+    '<button class="lv" data-l="'+i+'" aria-pressed="'+(i===LEVEL)+'">Level '+i+
+    '<span class="lvn">'+LEVELS[i].name+'</span></button>').join('')+
     '<span style="width:1px;height:20px;background:var(--line);margin:0 4px"></span>'+
     '<button class="lv lvopen" data-l="7" aria-pressed="'+(LEVEL===7)+'">Open investigation</button>'+
     '<span class="lname" id="lname"></span>';
@@ -2224,7 +2227,7 @@ function buildLevelBar(){
     rebuild();
     if(askOnLevel && LEVEL!==prev) askLevel();
   }));
-  $('lname').textContent=LEVEL===7?'not part of the laboratory sequence':LEVELS[LEVEL].name;
+  $('lname').textContent=LEVEL===7?'not part of the laboratory sequence':'';
 }
 function applyMode(){
   const isView=MODE==='view', isDemo=MODE==='demo';
@@ -2245,7 +2248,7 @@ function applyMode(){
 function rebuild(){
   buildStage(); buildControls(); defaultGraphs(); buildStrip(); applyMode(); buildModules();
   setReadoutMode('bars');
-  $('lname').textContent=LEVEL===7?'not part of the laboratory sequence':LEVELS[LEVEL].name;
+  $('lname').textContent=LEVEL===7?'not part of the laboratory sequence':'';
   $('levelbar').querySelectorAll('.lv').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.l===LEVEL));
   focusH=null; drawRegArrows(); renderLog();
   if(!lastD)lastD=step(S,C,1e-6);
@@ -2418,8 +2421,8 @@ function buildOrientMenu(){
       '<span class="t"><b>'+m.t+'</b><span>'+m.det+'</span></span>'+
       '<span class="lv">Level '+m.lv+'</span>'+
       (modDone[m.id]
-        ? '<span class="dn">done</span><button class="btn" data-omreset="'+m.id+'" title="Mark this task as not done" style="padding:3px 9px;font-size:11px;margin-left:8px">Redo</button>'
-        : '<button class="btn" data-om="'+m.id+'" style="padding:4px 11px;font-size:11.5px">Start</button>')+
+        ? '<span class="dn">done</span><button class="btn" data-omreset="'+m.id+'" title="Mark this task as not done" style="padding:3px 9px;font-size:13px;margin-left:8px">Redo</button>'
+        : '<button class="btn" data-om="'+m.id+'" style="padding:4px 11px;font-size:13px">Start</button>')+
       '</div>').join('');
   list.querySelectorAll('[data-omreset]').forEach(b=>b.addEventListener('click',()=>{
     const id=b.dataset.omreset;

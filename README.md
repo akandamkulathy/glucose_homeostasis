@@ -12,9 +12,15 @@ Students set conditions, run the clock, and read the result.
 
 - **Layout.** The diagram spans the width of the page with the measurements in a rail beside
   it and the alert strip beneath. Directly under the diagram sit the Controls, with Defaults
-  in their header, and the Clock; Food intake, Workload, Run and Advance are all visible with
-  the diagram on screens down to 1366 x 768. Below those, on a shared grid, are the control
-  log, the recorded graphs, the reservoir contents and the energy ledger.
+  in their header, and the Clock; on a screen about 900 px tall these sit with the diagram,
+  and on a shorter one they are a short scroll below it. Below those, on a shared grid, are
+  the control log, the recorded graphs, the reservoir contents and the energy ledger.
+- **Type size.** Nothing in the interface is set below 12 px. The diagram is drawn in a
+  1560-unit viewBox scaled to the width available, so its labels are smaller than their
+  nominal size: the smallest render at about 10 px on a 1600-wide screen and 9 px at 1366.
+  The page is capped at 1500 px so the diagram has room to grow.
+- **Contrast.** Every piece of text meets WCAG AA against its own background in both themes,
+  measured rather than assumed: 4.5:1 for body text, 3:1 for large.
 - **Diagram grammar.** Rounded boxes are stores, heavily dashed boxes are circulating pools,
   square boxes with a solid left edge are rates, and the funnel marks the one node with a
   capacity limit, liver convergence. Its meter shows the gateway load; past 100% the surplus
