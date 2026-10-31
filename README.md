@@ -8,6 +8,10 @@ server.
 Reservoirs hold chemical energy. Arrows are the rates at which energy moves between them.
 Students set conditions, run the clock, and read the result.
 
+**Prototype v0.9.0**, built 2026-10-31. The version shows beside the wordmark and in full
+under About; both read one `VERSION` constant in `index.html`, so bumping it there is enough.
+Please quote it in any bug report.
+
 ## Layout and features
 
 - **Layout.** The diagram spans the width of the page with the measurements in a rail beside
@@ -19,13 +23,24 @@ Students set conditions, run the clock, and read the result.
   1560-unit viewBox scaled to the width available, so its labels are smaller than their
   nominal size: the smallest render at about 10 px on a 1600-wide screen and 9 px at 1366.
   The page is capped at 1500 px so the diagram has room to grow.
-- **Contrast.** Every piece of text meets WCAG AA against its own background in both themes,
-  measured rather than assumed: 4.5:1 for body text, 3:1 for large.
+- **Contrast.** Measured, not assumed, and measured against the real background: a node's
+  label is checked against its own tinted fill, not the card behind it, which is where the
+  shortfalls hid. The standard is split by what the text does. Everything that carries
+  information in monochrome — the flow labels, the box subtitles, every readout, and all of
+  the interface chrome — meets **AAA, 7:1**; those grey labels were the specific thing that
+  read as low-contrast. Labels whose colour is itself the signal, the box titles and their
+  values, meet **AA with margin, 4.85:1 or better**, because darkening them to 7:1 drains the
+  colour that marks which family a box belongs to. Where white sits on a coloured fill (the
+  Run button, the ledger bars) it is AAA.
 - **Diagram grammar.** Rounded boxes are stores, heavily dashed boxes are circulating pools,
   square boxes with a solid left edge are rates, and the funnel marks the one node with a
   capacity limit, liver convergence. Its meter shows the gateway load; past 100% the surplus
   leaves as ketone bodies. Systemic convergence is every tissue outside the liver, and ketone
   bodies flow only there, since the liver cannot use them.
+- **Level orientation.** Selecting a level from the bar opens a short card naming what that
+  level adds; for Levels 4 to 6 it also says what the level is for. The same one-line summary
+  stays under the level bar for whichever level is current, so it is still there after the card
+  is dismissed and when a guided task moves the level for you.
 - **Measurements** show their normal ranges at every level, and each range bar extends its
   scale, marked with an arrow, when a reading runs past the printed maximum.
 - **Orientation** is a single entry rather than something scattered across levels. It offers a
@@ -101,7 +116,8 @@ exactly neutral at zero, so the taught levels behave identically whether or not 
 **Control room.** The flow diagram, status alerts, readouts with normal ranges, three live
 traces beneath the diagram, and the energy ledger. Arrow thickness scales with the rate of
 energy transfer and the dashes travel faster as that rate rises, so an active pathway reads
-as motion. Regulator badges brighten and grow as each hormone drives its flow harder; click
+as motion. A flow carrying nothing is drawn thin and grey but never below about 1.4 px, so
+the shape of the whole system stays legible while the active paths still dominate. Regulator badges brighten and grow as each hormone drives its flow harder; click
 a hormone to trace every action it has.
 
 **Graphs.** One expanded plot with the full set beneath it; click any graph to expand it.
