@@ -2342,7 +2342,7 @@ document.querySelectorAll('[data-start]').forEach(b=>b.addEventListener('click',
   if(b.dataset.start==='orient') setTimeout(openOrientMenu,220);
 }));
 ['about_open','about_open_w'].forEach(id=>{const e=$(id); if(e) e.addEventListener('click',()=>{fadeIn('about',240);});});
-const VERSION='0.9.0', BUILD='2026-10-31';
+const VERSION='0.9.1', BUILD='2026-10-31';
 const LVLNEW={
  7:'The whole model, with no set task, plus a control for acute illness. Nothing here is part of the laboratory sequence.',
  1:'The essentials: food arriving, the blood glucose pool, and the energy the body spends.',
@@ -2355,9 +2355,13 @@ const LVLNEW={
 /* a second sentence for the levels students explore unaided, saying what the
    level is FOR rather than only what it adds */
 const LVLWHY={
+ 1:'It sets up the first question: if that pool is so small, what keeps it from emptying?',
+ 2:'Now you can ask where the energy actually sits, and how long each store would last if it had to supply the body alone.',
+ 3:'This is where the system becomes self-correcting: you can see what detects a change in plasma glucose and what it does about it.',
  4:'Until now the model has only answered food and workload; these let you push it from outside and watch how the regulation responds.',
  5:'Until now every substrate reaching the liver could be processed. This level adds the limit, and shows where the surplus goes once it is passed.',
- 6:'These are the tools for taking a failed system apart: remove one signal at a time and see how much of the failure each one accounts for.'
+ 6:'These are the tools for taking a failed system apart: remove one signal at a time and see how much of the failure each one accounts for.',
+ 7:'Use it to combine things the numbered levels deliberately keep apart.'
 };
 let askOnLevel=true;
 const TOUR=[

@@ -8,7 +8,7 @@ server.
 Reservoirs hold chemical energy. Arrows are the rates at which energy moves between them.
 Students set conditions, run the clock, and read the result.
 
-**Prototype v0.9.0**, built 2026-10-31. The version shows beside the wordmark and in full
+**Prototype v0.9.1**, built 2026-10-31. The version shows beside the wordmark and in full
 under About; both read one `VERSION` constant in `index.html`, so bumping it there is enough.
 Please quote it in any bug report.
 
@@ -37,10 +37,11 @@ Please quote it in any bug report.
   capacity limit, liver convergence. Its meter shows the gateway load; past 100% the surplus
   leaves as ketone bodies. Systemic convergence is every tissue outside the liver, and ketone
   bodies flow only there, since the liver cannot use them.
-- **Level orientation.** Selecting a level from the bar opens a short card naming what that
-  level adds; for Levels 4 to 6 it also says what the level is for. The same one-line summary
-  stays under the level bar for whichever level is current, so it is still there after the card
-  is dismissed and when a guided task moves the level for you.
+- **Level orientation.** Selecting a level from the bar opens a short card: one sentence on
+  what the level adds, and one on what it is for — the question the level lets you ask. The
+  first of those two also sits in a banner under the level bar for whichever level is current,
+  so it survives dismissing the card and appears when a guided task moves the level for you.
+  The banner stays one line on purpose; it is meant to be read at a glance, not studied.
 - **Measurements** show their normal ranges at every level, and each range bar extends its
   scale, marked with an arrow, when a reading runs past the printed maximum.
 - **Orientation** is a single entry rather than something scattered across levels. It offers a
