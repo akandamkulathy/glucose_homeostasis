@@ -557,7 +557,7 @@ button.mustread{border-color:#C2410C!important}
         <span class="hint" id="flowHint">Arrow thickness and pulse rate = rate of energy transfer</span>
       </div>
       <div class="card-b stage">
-        <svg id="stage" viewBox="0 0 1560 700" role="img" aria-label="Diagram of metabolic energy reservoirs and the flows between them">
+        <svg id="stage" viewBox="0 0 1560 854" role="img" aria-label="Diagram of metabolic energy reservoirs and the flows between them">
           <defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M1 1.5 L9 5 L1 8.5 z" fill="context-stroke"/></marker></defs>
           <g id="flows" fill="none" stroke-linecap="round"></g>
@@ -843,51 +843,51 @@ function flagUpTo(k,L){for(let i=1;i<=L;i++) if(LEVELS[i][k]) return true; retur
 /* ================= DIAGRAM ================= */
 const NODES=[
  {id:'diet',  x:96,  y:16, w:228,h:66, c:'diet',t:'Food intake',      s:'carbohydrate \u00b7 fat \u00b7 protein', rate:1},
- {id:'liver', x:96,  y:118,w:228,h:64, c:'gly', t:'Liver glycogen',   s:'releasable to blood', fill:1},
- {id:'muscle',x:96,  y:216,w:228,h:64, c:'gly', t:'Muscle glycogen',  s:'local use only', fill:1},
- {id:'prot',  x:96,  y:314,w:228,h:64, c:'pro', t:'Cell protein',     s:'structural, not a fuel store', fill:1},
- {id:'pool',  x:566, y:104,w:330,h:108,c:'glu', t:'Blood glucose pool',s:'circulating transit pool', big:1, fill:1, transit:1},
+ {id:'liver', x:96,  y:144,w:228,h:78, c:'gly', t:'Liver glycogen',   s:'releasable to blood', fill:1},
+ {id:'muscle',x:96,  y:264,w:228,h:78, c:'gly', t:'Muscle glycogen',  s:'local use only', fill:1},
+ {id:'prot',  x:96,  y:383,w:228,h:78, c:'pro', t:'Cell protein',     s:'structural, not a fuel store', fill:1},
+ {id:'pool',  x:566, y:127,w:330,h:132,c:'glu', t:'Blood glucose pool',s:'circulating transit pool', big:1, fill:1, transit:1},
  {id:'adip',  x:1276,y:16, w:248,h:66, c:'fat', t:'Adipose lipid',    s:'long-term reserve', fill:1},
- {id:'fa',    x:1276,y:132,w:248,h:64, c:'fa',  t:'Fatty acids',      s:'circulating, from lipolysis', transit:1},
- {id:'lconv', x:430, y:346,w:280,h:132,c:'conv',t:'Liver convergence',s:'processed in the liver', big:1, conv:1, funnel:1},
- {id:'ket',   x:788, y:378,w:210,h:66, c:'ket', t:'Ketone bodies',    s:'circulating, made in the liver', transit:1},
- {id:'sconv', x:1076,y:346,w:280,h:132,c:'conv',t:'Systemic convergence',s:'all tissues outside the liver', big:1, conv:1},
- {id:'lwork', x:462, y:604,w:216,h:62, c:'atp', t:'Liver energy use', s:'work and heat', rate:1},
- {id:'swork', x:1108,y:604,w:216,h:62, c:'atp', t:'Systemic energy use',s:'work and heat', rate:1}
+ {id:'fa',    x:1276,y:161,w:248,h:78, c:'fa',  t:'Fatty acids',      s:'circulating, from lipolysis', transit:1},
+ {id:'lconv', x:430, y:422,w:280,h:161,c:'conv',t:'Liver convergence',s:'processed in the liver', big:1, conv:1, funnel:1},
+ {id:'ket',   x:788, y:461,w:210,h:81, c:'ket', t:'Ketone bodies',    s:'circulating, made in the liver', transit:1},
+ {id:'sconv', x:1076,y:422,w:280,h:161,c:'conv',t:'Systemic convergence',s:'all tissues outside the liver', big:1, conv:1},
+ {id:'lwork', x:462, y:737,w:216,h:76, c:'atp', t:'Liver energy use', s:'work and heat', rate:1},
+ {id:'swork', x:1108,y:737,w:216,h:76, c:'atp', t:'Systemic energy use',s:'work and heat', rate:1}
 ];
 
 const FLOWS=[
- {id:'f_diet_pool', d:'M324 52 L558 122',                            lab:'carbohydrate',   lx:356,ly:78, a:'start'},
- {id:'f_diet_adip', d:'M324 30 Q800 -4 1272 30',                     lab:'fat',            lx:800,ly:26, a:'middle'},
- {id:'f_diet_prot', d:'M170 82 Q44 130 44 252 Q44 346 92 346',       lab:'protein',        lx:50,ly:210, a:'start'},
- {id:'f_liver_pool',d:'M324 134 L562 134',                           lab:'glycogenolysis', lx:442,ly:124,a:'middle'},
- {id:'f_pool_liver',d:'M562 168 L324 168',                           lab:'glycogenesis',   lx:442,ly:188,a:'middle'},
- {id:'f_pool_mus',  d:'M590 208 Q460 240 328 244'},
- {id:'f_mus_sconv', d:'M324 252 Q350 252 350 288 L350 496 Q350 512 424 512 L1028 512 Q1072 512 1072 460 L1072 424',
-                    lab:'spent in the muscle itself', lx:724,ly:504,a:'middle'},
- {id:'f_prot_pool', d:'M324 330 Q492 300 568 214',                   lab:'gluconeogenesis',lx:394,ly:300,a:'start'},
- {id:'f_pool_lconv',d:'M618 216 L566 340',                           lab:'constitutive',   lx:602,ly:278,a:'start'},
- {id:'f_pool_sconv',d:'M896 210 Q1060 258 1180 340',                 lab:'glucose uptake', lx:920,ly:270,a:'start'},
- {id:'f_pool_adip', d:'M896 116 Q1090 56 1272 34',                   lab:'lipogenesis',    lx:1055,ly:82,a:'middle'},
- {id:'f_adip_pool', d:'M1312 82 Q1110 118 900 150',                  lab:'glycerol',       lx:1130,ly:140,a:'middle'},
- {id:'f_adip_fa',   d:'M1396 82 L1396 128',                          lab:'lipolysis',      lx:1416,ly:110,a:'start'},
- {id:'f_fa_lconv',  d:'M1276 160 Q880 218 710 370'},
- {id:'f_fa_sconv',  d:'M1396 196 L1396 340 Q1396 378 1352 378',      lab:'oxidation',      lx:1414,ly:264,a:'start'},
- {id:'f_lconv_ket', d:'M710 396 Q748 380 784 402',                   lab:'ketogenesis',    lx:756,ly:366,a:'start'},
- {id:'f_ket_sconv', d:'M998 412 L1072 412'},
- {id:'f_lconv_work',d:'M570 480 L570 600',                           lab:'expenditure',    lx:582,ly:566,a:'start'},
- {id:'f_sconv_work',d:'M1216 480 L1216 600',                         lab:'expenditure',    lx:1228,ly:566,a:'start'}
+ {id:'f_diet_pool', d:'M324 63 L558 149',                            lab:'carbohydrate',   lx:356,ly:95, a:'start'},
+ {id:'f_diet_adip', d:'M324 37 Q800 -5 1272 37',                     lab:'fat',            lx:800,ly:32, a:'middle'},
+ {id:'f_diet_prot', d:'M170 100 Q44 159 44 307 Q44 422 92 422',       lab:'protein',        lx:50,ly:256, a:'start'},
+ {id:'f_liver_pool',d:'M324 163 L562 163',                           lab:'glycogenolysis', lx:442,ly:151,a:'middle'},
+ {id:'f_pool_liver',d:'M562 205 L324 205',                           lab:'glycogenesis',   lx:442,ly:229,a:'middle'},
+ {id:'f_pool_mus',  d:'M590 254 Q460 293 328 298'},
+ {id:'f_mus_sconv', d:'M324 307 Q350 307 350 351 L350 605 Q350 625 424 625 L1028 625 Q1072 625 1072 561 L1072 517',
+                    lab:'spent in the muscle itself', lx:724,ly:615,a:'middle'},
+ {id:'f_prot_pool', d:'M324 403 Q492 366 568 261',                   lab:'gluconeogenesis',lx:394,ly:366,a:'start'},
+ {id:'f_pool_lconv',d:'M618 264 L566 415',                           lab:'constitutive',   lx:602,ly:339,a:'start'},
+ {id:'f_pool_sconv',d:'M896 256 Q1060 315 1180 415',                 lab:'glucose uptake', lx:920,ly:329,a:'start'},
+ {id:'f_pool_adip', d:'M896 142 Q1090 68 1272 41',                   lab:'lipogenesis',    lx:1055,ly:100,a:'middle'},
+ {id:'f_adip_pool', d:'M1312 100 Q1110 144 900 183',                  lab:'glycerol',       lx:1130,ly:171,a:'middle'},
+ {id:'f_adip_fa',   d:'M1396 100 L1396 156',                          lab:'lipolysis',      lx:1416,ly:134,a:'start'},
+ {id:'f_fa_lconv',  d:'M1276 195 Q880 266 710 451'},
+ {id:'f_fa_sconv',  d:'M1396 239 L1396 415 Q1396 461 1352 461',      lab:'oxidation',      lx:1414,ly:322,a:'start'},
+ {id:'f_lconv_ket', d:'M710 483 Q748 464 784 490',                   lab:'ketogenesis',    lx:756,ly:447,a:'start'},
+ {id:'f_ket_sconv', d:'M998 503 L1072 503'},
+ {id:'f_lconv_work',d:'M570 586 L570 732',                           lab:'expenditure',    lx:582,ly:691,a:'start'},
+ {id:'f_sconv_work',d:'M1216 586 L1216 732',                         lab:'expenditure',    lx:1228,ly:691,a:'start'}
 ];
 
 const REGS=[
- {h:'gcg',s:'+',flow:'f_liver_pool',x:398,y:154,sx:398,sy:134,k:'glycogenolysis',nd:['liver','pool']},
- {h:'ins',s:'+',flow:'f_pool_liver',x:504,y:154,sx:504,sy:168,k:'liverStore',   nd:['pool','liver']},
- {h:'ins',s:'+',flow:'f_pool_sconv',x:1026,y:288,sx:1046,sy:266,k:'idUptake',   nd:['pool','sconv']},
- {h:'ins',s:'+',flow:'f_pool_adip', x:1122,y:88,sx:1102,sy:66,k:'lipogenesis',  nd:['pool','adip']},
- {h:'ins',s:'\u2212',flow:'f_adip_fa',x:1358,y:92,sx:1390,sy:92,k:'insBrake',   nd:['adip','fa']},
- {h:'gcg',s:'+',flow:'f_adip_fa',   x:1358,y:118,sx:1390,sy:118,k:'lipo',       nd:['adip','fa']},
- {h:'gcg',s:'+',flow:'f_prot_pool', x:406,y:318,sx:426,sy:300,k:'gngAA',        nd:['prot','pool']},
- {h:'gcg',s:'+',flow:'f_lconv_ket', x:748,y:418,sx:748,sy:394,k:'ketoProd',lv:5,nd:['lconv','ket']}
+ {h:'gcg',s:'+',flow:'f_liver_pool',x:398,y:188,sx:398,sy:163,k:'glycogenolysis',nd:['liver','pool']},
+ {h:'ins',s:'+',flow:'f_pool_liver',x:504,y:188,sx:504,sy:205,k:'liverStore',   nd:['pool','liver']},
+ {h:'ins',s:'+',flow:'f_pool_sconv',x:1026,y:351,sx:1046,sy:325,k:'idUptake',   nd:['pool','sconv']},
+ {h:'ins',s:'+',flow:'f_pool_adip', x:1122,y:107,sx:1102,sy:81,k:'lipogenesis',  nd:['pool','adip']},
+ {h:'ins',s:'\u2212',flow:'f_adip_fa',x:1358,y:112,sx:1390,sy:112,k:'insBrake',   nd:['adip','fa']},
+ {h:'gcg',s:'+',flow:'f_adip_fa',   x:1358,y:144,sx:1390,sy:144,k:'lipo',       nd:['adip','fa']},
+ {h:'gcg',s:'+',flow:'f_prot_pool', x:406,y:388,sx:426,sy:366,k:'gngAA',        nd:['prot','pool']},
+ {h:'gcg',s:'+',flow:'f_lconv_ket', x:748,y:510,sx:748,sy:481,k:'ketoProd',lv:5,nd:['lconv','ket']}
 ];
 const NODEHELP={"diet": ["Food intake", "Energy arriving from the diet, split into carbohydrate, fat and protein. Set by the Food intake control; the meal pattern toggle decides whether it arrives steadily or as three meals. The sharp corners and heavy left edge mark this as a source: energy entering the body, not a quantity held in it."], "pool": ["Blood glucose pool", "The glucose dissolved in the plasma. Its dashed outline marks it as a circulating pool rather than a store: only a few grams at any moment, enough for well under an hour of resting demand. Compare its energy figure with the reserves around it."], "liver": ["Liver glycogen", "Glucose stored as glycogen in the liver. This is the only glycogen store that can be broken back down and released into the blood."], "muscle": ["Muscle glycogen", "Glucose stored as glycogen in skeletal muscle. Muscle lacks glucose-6-phosphatase, the enzyme that frees glucose for export, so this store is spent by the muscle holding it and can never supply another tissue. That is what the \"not shared\" mark means. Its arrow runs to systemic convergence only because that is where the energy is used."], "adip": ["Adipose lipid", "Triacylglycerol in adipose tissue, and by far the largest energy store. Mobilizing it releases fatty acids and glycerol."], "prot": ["Cell protein", "Structural proteins and enzymes, about 6 kg holding roughly 24,000 kcal. The energy figure is shown for comparison only: unlike glycogen and adipose lipid, protein is not stored to be used as fuel. Every protein is doing a job, so breaking it down costs function, and the body does so reluctantly and mainly once the other reserves are low."], "fa": ["Fatty acids", "Fatty acids released into the blood by lipolysis. A circulating pool, not a store, which is why the outline is dashed. They cannot be converted to glucose; only the glycerol backbone can. Breaking a fatty acid down yields acetyl-CoA, and there is no route from acetyl-CoA back to glucose."], "lconv": ["Liver convergence", "The point at which substrates in the liver enter cellular respiration: in textbook terms, where acetyl-CoA enters the citric acid cycle and oxidative phosphorylation. Gluconeogenesis competes for the same intermediates, chiefly oxaloacetate, which acetyl-CoA needs in order to enter the cycle at all; that competition is what limits how much can pass. The funnel shape and the meter show that limit; when it is reached, the surplus leaves as ketone bodies."], "sconv": ["Systemic convergence", "Entry into cellular respiration in every tissue outside the liver: brain, skeletal muscle, heart, kidney and the rest. It is drawn separately from the liver because a few processes, gluconeogenesis and ketone synthesis among them, happen only in the liver. It has no bottleneck in this model, which is why only the liver convergence is drawn as a funnel."], "ket": ["Ketone bodies", "Acetoacetate and beta-hydroxybutyrate, assembled by the liver from the acetyl-CoA that accumulates when its gateway is saturated. The liver makes them but cannot use them: it lacks the enzyme needed to reactivate them, so they are exported for the rest of the body. That is why their arrow runs only to systemic convergence. They are organic acids, so accumulation lowers arterial pH."], "lwork": ["Liver energy use", "Work and heat produced by the liver itself. The sharp corners and heavy left edge mark this as a sink: energy leaving the body, not a quantity held in it."], "swork": ["Systemic energy use", "Work and heat produced by the rest of the body. This is the demand every reserve ultimately supplies. The sharp corners and heavy left edge mark this as a sink: energy leaving the body, not a quantity held in it."]};
 const COL={diet:'--diet',glu:'--glu',gly:'--gly',fat:'--fat',fa:'--fa',conv:'--conv',atp:'--atp',ket:'--ket',pro:'--pro'};
@@ -1029,9 +1029,9 @@ function buildStage(){
       t.setAttribute('x',cx);t.setAttribute('y',n.y+y);t.setAttribute('text-anchor','middle');
       t.setAttribute('font-size',sz);t.setAttribute('fill',fl);if(w2)t.setAttribute('font-weight',w2);
       t.setAttribute('font-family',fam||'Space Grotesk, sans-serif');g.appendChild(t);return t;};
-    T(n.conv?30:Math.round(n.h*0.32), n.big?19.5:17,'600',col).textContent=n.t;
-    T(n.conv?53:Math.round(n.h*0.60), 14,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
-    T(n.conv?78:Math.round(n.h*0.90), n.conv?16.5:(n.big?16.5:14.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
+    T(n.conv?37:Math.round(n.h*0.32), n.big?19.5:17,'600',col).textContent=n.t;
+    T(n.conv?65:Math.round(n.h*0.60), 14,null,cssv('--svg-label'),'IBM Plex Sans, sans-serif').textContent=n.s;
+    T(n.conv?95:Math.round(n.h*0.90), n.conv?16.5:(n.big?16.5:14.5),'600',col,'IBM Plex Mono, monospace').setAttribute('id','val_'+n.id);
     g.setAttribute('id','nd_'+n.id);
     if(n.tag){
       const tg=document.createElementNS(NS,'text');
@@ -1052,10 +1052,10 @@ function buildStage(){
       mk.textContent='?'; g.appendChild(mk);
     }
     if(n.id==='sconv'){
-      T(94,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
+      T(115,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','sconvtxt');
     }
     if(n.id==='lconv'){
-      const bx=n.x+40,by=n.y+98,bw=n.w-80;
+      const bx=n.x+40,by=n.y+120,bw=n.w-80;
       const tr=document.createElementNS(NS,'rect');
       tr.setAttribute('x',bx);tr.setAttribute('y',by);tr.setAttribute('width',bw);tr.setAttribute('height',6);
       tr.setAttribute('rx',3);tr.setAttribute('fill',cssv('--svg-face'));tr.setAttribute('stroke',col);
@@ -1063,7 +1063,7 @@ function buildStage(){
       const fr=document.createElementNS(NS,'rect');fr.setAttribute('id','capbar');
       fr.setAttribute('x',bx+1);fr.setAttribute('y',by+1);fr.setAttribute('width',0);
       fr.setAttribute('height',4);fr.setAttribute('rx',2);fr.setAttribute('fill',col);g.appendChild(fr);
-      T(94,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
+      T(115,12.5,null,cssv('--svg-label'),'IBM Plex Mono, monospace').setAttribute('id','captxt');
     }
     gN.appendChild(g);
   });
@@ -1093,13 +1093,13 @@ function buildStage(){
 }
 function buildHormoneBox(){
   const gH=$('hormonebox');
-  const bx=32,by=566,bw=356,bh=104;
+  const bx=32,by=691,bw=356,bh=127;
   const r=document.createElementNS(NS,'rect');
   r.setAttribute('x',bx);r.setAttribute('y',by);r.setAttribute('width',bw);r.setAttribute('height',bh);
   r.setAttribute('rx',8);r.setAttribute('fill',cssv('--panel-2'));r.setAttribute('stroke',cssv('--ink-2'));
   r.setAttribute('stroke-width','1.4');
   gH.appendChild(r);
-  [['ins','Insulin',by+44],['gcg','Glucagon',by+76]].forEach(([h,nm,yy])=>{
+  [['ins','Insulin',by+54],['gcg','Glucagon',by+93]].forEach(([h,nm,yy])=>{
     const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
     const hit=document.createElementNS(NS,'rect');
     hit.setAttribute('x',bx+6);hit.setAttribute('y',yy-17);hit.setAttribute('width',bw-12);
@@ -1125,13 +1125,13 @@ function buildHormoneBox(){
     gH.appendChild(g);
   });
   const hint=document.createElementNS(NS,'text');
-  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+13);hint.setAttribute('font-size','11.5');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
+  hint.setAttribute('x',bx+9);hint.setAttribute('y',by+16);hint.setAttribute('font-size','11.5');hint.setAttribute('letter-spacing','.06em');hint.setAttribute('font-weight','600');
   hint.setAttribute('fill',cssv('--ink-2'));hint.setAttribute('font-family','IBM Plex Mono, monospace');hint.setAttribute('stroke',cssv('--panel-2'));hint.setAttribute('stroke-width','3');hint.setAttribute('paint-order','stroke');
   hint.textContent='\u25b8 SENSED ABOVE \u2192 ACTS ON THE + AND \u2212 FLOWS';gH.appendChild(hint);
   // an explicit sensing arrow, so the diagram reads as a closed loop rather than
   // a flow chart with regulators attached beside it
   const sense=document.createElementNS(NS,'path');
-  sense.setAttribute('d','M574 214 Q392 236 352 330 Q318 430 300 500 Q290 548 '+(bx+bw-40)+' '+(by-6));
+  sense.setAttribute('d','M574 261 Q392 288 352 403 Q318 525 300 610 Q290 669 '+(bx+bw-40)+' '+(by-6));
   sense.setAttribute('id','senseArrow');
   sense.setAttribute('stroke',cssv('--svg-label')); sense.setAttribute('stroke-width','2');
   sense.setAttribute('fill','none'); sense.setAttribute('opacity','.8');
@@ -1142,14 +1142,14 @@ function buildHormoneBox(){
   senseHit.removeAttribute('marker-end'); senseHit.removeAttribute('stroke-dasharray'); senseHit.setAttribute('pointer-events','stroke');
   senseHit.style.cursor='pointer'; gH.appendChild(senseHit);
   const sl=document.createElementNS(NS,'text');
-  sl.setAttribute('x',36); sl.setAttribute('y',556); sl.setAttribute('font-size','13');
+  sl.setAttribute('x',36); sl.setAttribute('y',678); sl.setAttribute('font-size','13');
   sl.setAttribute('fill',cssv('--svg-label')); sl.setAttribute('font-family','IBM Plex Mono, monospace');
   sl.setAttribute('stroke',cssv('--svg-halo')); sl.setAttribute('stroke-width','3');
   sl.setAttribute('paint-order','stroke'); sl.textContent='plasma [glucose] is sensed here';
   gH.appendChild(sl);
   if(flagUpTo('insGcg',LEVEL)){
     const p=document.createElementNS(NS,'path');
-    p.setAttribute('d','M'+(bx+18)+' '+(by+48)+' L'+(bx+18)+' '+(by+66));
+    p.setAttribute('d','M'+(bx+18)+' '+(by+59)+' L'+(bx+18)+' '+(by+81));
     p.setAttribute('stroke',cssv('--ins'));p.setAttribute('stroke-width','2');p.setAttribute('fill','none');
     gH.appendChild(p);
     const cap=document.createElementNS(NS,'path');
